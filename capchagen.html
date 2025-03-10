@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+:root {
+  --primary-color: #4CAF50;
+  --secondary-color: #8BC34A;
+  --quantum-energy: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+}
+
+body {
+  background: linear-gradient(45deg, #121212, #1e1e1e);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow: hidden;
+  perspective: 1000px;
+}
+
+.quantum-ball {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 30% 30%, 
+    rgba(255,255,255,0.3), 
+    var(--primary-color)
+  );
+  position: relative;
+  transform-style: preserve-3d;
+  animation: 
+    quantum-bounce 2s infinite var(--quantum-energy),
+    quantum-spin 3s infinite linear,
+    quantum-glow 2s infinite alternate,
+    quantum-color-shift 4s infinite linear;
+  box-shadow: 
+    0 10px 20px rgba(0,0,0,0.2),
+    0 0 30px var(--primary-color);
+  will-change: transform, filter, background;
+}
+
+@keyframes quantum-bounce {
+  0%, 100% { 
+    transform: 
+      translateY(0) 
+      rotateX(0deg) 
+      rotateY(0deg) 
+      scale(1); 
+  }
+  25% { 
+    transform: 
+      translateY(-150px) 
+      rotateX(-15deg) 
+      rotateY(10deg) 
+      scale(1.1); 
+  }
+  50% { 
+    transform: 
+      translateY(0) 
+      rotateX(0deg) 
+      rotateY(0deg) 
+      scale(0.9); 
+  }
+  75% { 
+    transform: 
+      translateY(100px) 
+      rotateX(15deg) 
+      rotateY(-10deg) 
+      scale(1.05); 
+  }
+}
+
+@keyframes quantum-spin {
+  0% { transform: rotate(0deg) perspective(500px); }
+  100% { transform: rotate(360deg) perspective(500px); }
+}
+
+@keyframes quantum-glow {
+  0% { 
+    filter: 
+      blur(2px) 
+      brightness(100%) 
+      contrast(100%); 
+  }
+  100% { 
+    filter: 
+      blur(5px) 
+      brightness(120%) 
+      contrast(110%); 
+  }
+}
+
+@keyframes quantum-color-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.quantum-ball::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  background: radial-gradient(
+    circle, 
+    rgba(255,255,255,0.1), 
+    transparent 70%
+  );
+  border-radius: 50%;
+  animation: quantum-pulse 2s infinite;
+}
+
+@keyframes quantum-pulse {
+  0%, 100% { transform: scale(0.9); opacity: 0.6; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+.quantum-ball::after {
+  content: '🌈';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 20px;
+  opacity: 0.7;
+  animation: quantum-emoji 1s infinite alternate;
+}
+
+@keyframes quantum-emoji {
+  from { transform: translate(-50%, -50%) rotate(-5deg); }
+  to { transform: translate(-50%, -50%) rotate(5deg); }
+}
+</style>
+</head>
+<body>
+<div class="quantum-ball"></div>
+</body>
+</html>

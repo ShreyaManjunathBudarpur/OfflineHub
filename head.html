@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Reset and Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Header Styles */
+        header {
+            text-align: center;
+            padding: 2rem 1rem;
+            background: rgba(0, 0, 0, 0.8);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            letter-spacing: 3px;
+            font-weight: 700;
+            color: #fdbb2d;
+            text-transform: uppercase;
+            animation: glow 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px #fdbb2d, 0 0 20px #fdbb2d;
+            }
+            to {
+                text-shadow: 0 0 20px #fdbb2d, 0 0 40px #fdbb2d;
+            }
+        }
+
+        #clock {
+            margin-top: 1rem;
+            font-size: 1.2rem;
+            color: #ddd;
+        }
+
+        /* Search Bar Styles */
+        .search-container {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 15;
+        }
+
+        .search-bar {
+            padding: 0.8rem;
+            font-size: 1rem;
+            width: 250px;
+            border-radius: 30px;
+            border: 2px solid #fdbb2d;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            outline: none;
+            transition: width 0.4s ease-in-out;
+        }
+
+        .search-bar:focus {
+            width: 300px;
+            background-color: rgb(0, 0, 0);
+        }
+
+        .suggestions {
+            display: none;
+            position: absolute;
+            top: 40px;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            z-index: 10;
+        }
+
+        .suggestions.active {
+            display: block;
+        }
+
+        .suggestions a {
+            display: block;
+            padding: 0.8rem;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1rem;
+            border-bottom: 1px solid #ffffff;
+        }
+
+        .suggestions a:hover {
+            background-color: #fdbb2d;
+            color: #000;
+        }
+
+        /* Main Content Styles */
+        main {
+            flex: 1;
+            padding: 3rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .section {
+            margin: 2rem 0;
+            width: 100%;
+            max-width: 1200px;
+            text-align: center;
+        }
+
+        .section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            color: #f6f6f6;
+            border-bottom: 2px solid #f6f6f6;
+            display: inline-block;
+            padding-bottom: 0.5rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        /* Card Styles */
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            outline: none;
+        }
+
+        .card:focus {
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.7);
+            transform: scale(1.08);
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .card a {
+            display: block;
+            padding: 2rem;
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .card a:hover {
+            color: #fdbb2d;
+        }
+
+        /* Footer Styles */
+        footer {
+            background: rgba(0, 0, 0, 0.9);
+            text-align: center;
+            padding: 1.5rem 0;
+            font-size: 0.9rem;
+            color: #ddd;
+        }
+
+        footer p {
+            margin: 0.5rem 0;
+        }
+
+        footer a {
+            color: #fdbb2d;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        footer a:hover {
+            color: #fff;
+        }
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            header h1 {
+                font-size: 2.5rem;
+            }
+
+            .section h2 {
+                font-size: 2rem;
+            }
+
+            .search-bar {
+                width: 200px;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .section h2 {
+                font-size: 1.5rem;
+            }
+
+            .search-bar {
+                width: 150px;
+            }
+        }
+        /* Social Media Links */
+.social-links {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.social-links a {
+    margin: 0 1rem;
+    text-decoration: none;
+}
+
+.social-links img {
+    width: 30px;
+    height: 30px;
+    transition: transform 0.3s ease;
+}
+
+.social-links img:hover {
+    transform: scale(1.1);
+}
+
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Offline Hub</h1>
+        <div id="clock"></div>
+    </header>
+
+    <!-- Search Bar -->
+    <div class="search-container">
+        <input type="text" id="search" class="search-bar" placeholder="Search..." oninput="showSuggestions()" autocomplete="off">
+        <div id="suggestions" class="suggestions"></div>
+    </div>
+
+
+    <main>
+        <section class="section">
+            <h2>Utilities</h2>
+            <div class="grid">
+                <div class="card" tabindex="0"><a href="/newoffline/utilities/oldoffline.html">Overview</a></div>
+                <div class="card" tabindex="0"><a href="/newoffline/utilities/unit.html">Unit Converter</a></div>
+                <div class="card" tabindex="0"><a href="/newoffline/utilities/studyplan.html">Study Planner</a></div>
+                <div class="card" tabindex="0"><a href="/newoffline/utilities/timeconvert.html">Time Unit Converter</a></div>
+                <div class="card" tabindex="0"><a href="/newoffline/utilities/translatorr.html">Translator</a></div>
+                <div class="card" tabindex="0"><a href="/newoffline/utilities/currency.html">Currency Converter</a></div>
+                <div class="card" tabindex="0"><a href="/newoffline/utilities/calcu.html">Calculator</a></div>
+                <div class="card" tabindex="0"><a href="/newoffline/utilities/password.html">Password Generator</a></div>
+                <div class="card" tabindex="0"><a href="/newoffline/utilities/timezone.html">Time Zone Converter</a></div>
+                <div class="card" tabindex="0"><a href="/newoffline/utilities/dictionary.html">Dictionary</a></div>
+                <div class="card" tabindex="0"><a href="/newoffline/utilities/stopwatch.html">Stopwatch</a></div>
+                <div class="card" tabindex="0"><a href="/newoffline/utilities/fitness.html">Fitness Planner</a></div>
+                <div class="card" tabindex="0"><a href="/newoffline/utilities/periodictable.html">Periodic Table</a></div>
+                <div class="card" tabindex="0"><a href="/newoffline/utilities/namepick.html">Random Name Picker</a></div>
+                <div class="card" tabindex="0"><a href="/newoffline/utilities/colorconvert.html">Color Converter</a></div>
+                <div class="card" tabindex="0"><a href="/newoffline/utilities/qrcode.html">QR Code Generator</a></div>
+                <div class="card" tabindex="0"><a href="/newoffline/utilities/budgettrack.html">Budget Tracker</a></div>
+                <div class="card" tabindex="0"><a href="/newoffline/utilities/drawing.html">Drawing Pad</a></div>
+                
+                
+
+            </div>
+        </section>
+        <section class="section">
+            <h2>Games</h2>
+            <div class="grid">
+                <div class="card" tabindex="0"><a href="/newoffline/games/uno.html">UNO Game</a></div>
+                <div class="card" tabindex="0"><a href="/newoffline/games/monstervault.html">Monster-vault</a></div>
+                <div class="card" tabindex="0"><a href="/newoffline/games/2048.html">2048</a></div>
+                <div class="card" tabindex="0"><a href="/newoffline/games/snakegame.html">Snake Game</a></div>
+                <div class="card" tabindex="0"><a href="/newoffline/games/simongame.html">Simon Game</a></div>
+                <div class="card" tabindex="0"><a href="/newoffline/games/whackamole.html">Whack-a-Mole</a></div>
+                <div class="card" tabindex="0"><a href="/newoffline/games/mazegame.html">Maze Game</a></div>
+                <div class="card" tabindex="0"><a href="/newoffline/games/game.html">Kill the Birds</a></div>
+                <div class="card" tabindex="0"><a href="/newoffline/games/tictactoe.html">Tic-Tac-Toe</a></div>
+                <div class="card" tabindex="0"><a href="/newoffline/games/quiz.html">Guess the Word</a></div>
+                <div class="card" tabindex="0"><a href="/newoffline/games/memorygame.html">Memory Game</a></div>
+                <div class="card" tabindex="0"><a href="/newoffline/games/hangman.html">Hangman</a></div>
+                <div class="card" tabindex="0"><a href="/newoffline/games/suduko.html">Sudoku</a></div>
+                <div class="card" tabindex="0"><a href="/newoffline/games/car.html">Save the rack</a></div>
+                
+                
+            </div>
+        </section>
+        <section class="section">
+            <h2>Daily Inspiration</h2>
+            <div class="grid">
+                <div class="card" tabindex="0"><a href="/newoffline/qoute.html">Quotes for the Day!</a></div>
+                <div class="card" tabindex="0"><a href="/newoffline/breathe.html">Breathe!</a></div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Offline Hub. All Rights Reserved.</p>
+        <p>Built with ❤️ by TEAM OFFLINEHUB</p>
+        <div class="social-links">
+            <a href="https://www.facebook.com" target="_blank"><img src="/newoffline/icons8-facebook-100.png" alt="Facebook"></a>
+            <a href="https://www.instagram.com" target="_blank"><img src="/newoffline/icons8-instagram-logo-100.png" alt="Instagram"></a>
+            <a href="https://www.linkedin.com" target="_blank"><img src="/newoffline/icons8-linkedin-100.png" alt="LinkedIn"></a>
+        </div>
+    </footer>
+    
+    <script>
+        // Function to update the clock
+        function updateClock() {
+            const clockElement = document.getElementById("clock");
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const formattedDate = now.toLocaleDateString(undefined, options);
+            const formattedTime = now.toLocaleTimeString();
+            clockElement.textContent = `${formattedDate} | ${formattedTime}`;
+        }
+    
+        // Function to handle search suggestions
+        function showSuggestions() {
+            const searchInput = document.getElementById("search").value.toLowerCase();
+            const suggestions = document.getElementById("suggestions");
+            const apps = [
+                { name: "Overview", link: "/newoffline/oldoffline.html" },
+                { name: "Unit Converter", link: "/newoffline/unit.html" },
+                { name: "UNO Game", link: "/newoffline/uno.html" },
+{ name: "Monster-Vault", link: "/newoffline/monstervault.html" },
+{ name: "Time Unit Converter", link: "/newoffline/timeconvert.html" },
+{ name: "Translator", link: "/newoffline/translatorr.html" },
+{ name: "Currency Converter", link: "/newoffline/currency.html" },
+{ name: "Study Planner", link: "/newoffline/studyplan.html" },
+{ name: "Calculator", link: "/newoffline/calcu.html" },
+{ name: "Password Generator", link: "/newoffline/password.html" },
+{ name: "Time Zone Converter", link: "/newoffline/timezone.html" },
+{ name: "Dictionary", link: "/newoffline/dictionary.html" },
+{ name: "Stopwatch", link: "/newoffline/stopwatch.html" },
+{ name: "Fitness Planner", link: "/newoffline/fitness.html" },
+{ name: "Periodic Table", link: "/newoffline/periodictable.html" },
+{ name: "Random Name Picker", link: "/newoffline/namepick.html" },
+{ name: "Color Converter", link: "/newoffline/colorconvert.html" },
+{ name: "QR Code Generator", link: "/newoffline/qrcode.html" },
+{ name: "Budget Tracker", link: "/newoffline/budgettrack.html" },
+{ name: "Drawing Pad", link: "/newoffline/drawing.html" },
+{ name: "2048", link: "/newoffline/2048.html" },
+{ name: "Snake Game", link: "/newoffline/snakegame.html" },
+{ name: "Simon Game", link: "/newoffline/simongame.html" },
+{ name: "Whack-a-Mole", link: "/newoffline/whackamole.html" },
+{ name: "Maze Game", link: "/newoffline/mazegame.html" },
+{ name: "Kill the Birds", link: "/newoffline/game.html" },
+{ name: "Tic-Tac-Toe", link: "/newoffline/tictactoe.html" },
+{ name: "Guess the Word", link: "/newoffline/quiz.html" },
+{ name: "Memory Game", link: "/newoffline/memorygame.html" },
+{ name: "Hangman", link: "/newoffline/hangman.html" },
+{ name: "Sudoku", link: "/newoffline/suduko.html" },
+{ name: "Quotes for the Day!", link: "/newoffline/qoute.html" },
+{ name: "Breathe!", link: "/newoffline/breathe.html" }
+
+            ];
+    
+            const filteredApps = apps.filter(app =>
+                app.name.toLowerCase().includes(searchInput)
+            );
+    
+            if (filteredApps.length > 0) {
+                suggestions.innerHTML = filteredApps
+                    .map(app => `<a href="${app.link}">${app.name}</a>`)
+                    .join("");
+                suggestions.classList.add("active");
+            } else {
+                suggestions.innerHTML = "";
+                suggestions.classList.remove("active");
+            }
+        }
+    
+        // Function to handle keyboard navigation between cards
+        function enableCardNavigation() {
+            const cards = Array.from(document.querySelectorAll(".card"));
+            const grid = document.querySelector(".grid");
+            let currentIndex = 0;
+    
+            function focusCard(index) {
+                if (cards[index]) {
+                    cards[index].focus();
+                }
+            }
+    
+            function getCardsPerRow() {
+                const card = cards[0];
+                if (!card) return 1; // Default to 1 if no cards
+                const cardWidth = card.offsetWidth;
+                const gridWidth = grid.offsetWidth;
+                return Math.floor(gridWidth / cardWidth);
+            }
+    
+            document.addEventListener("keydown", (e) => {
+                const cardsPerRow = getCardsPerRow();
+    
+                if (e.key === "ArrowRight") {
+                    e.preventDefault();
+                    currentIndex = (currentIndex + 1) % cards.length;
+                    focusCard(currentIndex);
+                } else if (e.key === "ArrowLeft") {
+                    e.preventDefault();
+                    currentIndex = (currentIndex - 1 + cards.length) % cards.length;
+                    focusCard(currentIndex);
+                } else if (e.key === "ArrowDown") {
+                    e.preventDefault();
+                    currentIndex = Math.min(currentIndex + cardsPerRow, cards.length - 1);
+                    focusCard(currentIndex);
+                } else if (e.key === "ArrowUp") {
+                    e.preventDefault();
+                    currentIndex = Math.max(currentIndex - cardsPerRow, 0);
+                    focusCard(currentIndex);
+                } else if (e.key === "Enter" && document.activeElement.classList.contains("card")) {
+                    const link = document.activeElement.querySelector("a");
+                    if (link) {
+                        window.location.href = link.href;
+                    }
+                }
+            });
+    
+            // Initially focus the first card
+            focusCard(currentIndex);
+        }
+    
+        // Initialize the page
+        document.addEventListener("DOMContentLoaded", () => {
+            updateClock();
+            setInterval(updateClock, 1000); // Update clock every second
+            enableCardNavigation();
+        });
+
+    const searchBar = document.getElementById("search");
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+
+    document.getElementById("voice-search").addEventListener("click", () => {
+        recognition.start();
+    });
+
+    recognition.onresult = (event) => {
+        searchBar.value = event.results[0][0].transcript;
+        showSuggestions();
+    };
+    </script>
+    
