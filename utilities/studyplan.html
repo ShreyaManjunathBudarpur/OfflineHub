@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Planner</title>
+    <style>
+        :root {
+            --bg-color-light: #ffffff;
+            --bg-color-dark: #121212;
+            --text-color-light: #000000;
+            --text-color-dark: #ffffff;
+            --accent-color: #6a11cb;
+            --secondary-accent: #2575fc;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color-light);
+            color: var(--text-color-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            transition: background-color 0.5s, color 0.5s;
+        }
+
+        .container {
+            background: rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 600px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .form-control {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+
+        .form-control input, .form-control select, .form-control button {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+            margin-bottom: 10px;
+        }
+
+        .form-control input, .form-control select {
+            background-color: rgba(0, 0, 0, 0.05);
+            color: inherit;
+        }
+
+        .form-control button {
+            cursor: pointer;
+            background: var(--accent-color);
+            color: white;
+            transition: transform 0.3s ease, background-color 0.3s;
+        }
+
+        .form-control button:hover {
+            transform: scale(1.05);
+            background: var(--secondary-accent);
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        ul li {
+            background: rgba(0, 0, 0, 0.05);
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.3s ease, background-color 0.3s;
+        }
+
+        ul li.overdue {
+            background: #ffcccc;
+        }
+
+        ul li.high-priority {
+            border-left: 5px solid #ff5252;
+        }
+
+        ul li.medium-priority {
+            border-left: 5px solid #ffa726;
+        }
+
+        ul li.low-priority {
+            border-left: 5px solid #4caf50;
+        }
+
+        ul li:hover {
+            transform: scale(1.03);
+        }
+
+        ul li button {
+            border: none;
+            background: #ff5252;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        ul li button:hover {
+            background: #ff0000;
+        }
+
+        ul li .details {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            font-size: 0.9rem;
+            margin-left: 10px;
+        }
+
+        .progress {
+            margin-top: 20px;
+            height: 10px;
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: #4caf50;
+            transition: width 0.3s ease-in-out;
+        }
+
+        .dark-mode {
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-dark);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .toggle-mode {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .toggle-mode button {
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            background: var(--secondary-accent);
+            color: white;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="toggle-mode">
+            <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
+            <button onclick="exportTasks()">Export Tasks</button>
+            <input type="file" id="import-file" style="display: none;" onchange="importTasks(event)">
+            <button onclick="document.getElementById('import-file').click()">Import Tasks</button>
+        </div>
+        <h1>Study Planner</h1>
+        <div class="form-control">
+            <input type="text" id="task-input" placeholder="Task Name">
+            <input type="date" id="task-deadline">
+            <select id="task-difficulty">
+                <option value="Easy">Easy</option>
+                <option value="Medium">Medium</option>
+                <option value="Hard">Hard</option>
+            </select>
+            <select id="task-priority">
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+            </select>
+            <button onclick="addTask()">Add Task</button>
+        </div>
+        <ul id="task-list"></ul>
+        <div class="progress">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+    </div>
+
+    <script>
+        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        let darkMode = JSON.parse(localStorage.getItem('darkMode')) || false;
+
+        document.body.classList.toggle('dark-mode', darkMode);
+
+        function updateProgressBar() {
+            const progressBar = document.getElementById('progress-bar');
+            const completedTasks = tasks.filter(task => task.completed).length;
+            const percentage = tasks.length > 0 ? (completedTasks / tasks.length) * 100 : 0;
+            progressBar.style.width = percentage + '%';
+        }
+
+        function toggleDarkMode() {
+            darkMode = !darkMode;
+            localStorage.setItem('darkMode', JSON.stringify(darkMode));
+            document.body.classList.toggle('dark-mode', darkMode);
+        }
+
+        function addTask() {
+            const taskName = document.getElementById('task-input').value.trim();
+            const taskDeadline = document.getElementById('task-deadline').value;
+            const taskDifficulty = document.getElementById('task-difficulty').value;
+            const taskPriority = document.getElementById('task-priority').value;
+
+            if (!taskName || !taskDeadline) {
+                alert('Please fill in all fields.');
+                return;
+            }
+
+            const task = {
+                id: Date.now(),
+                name: taskName,
+                deadline: taskDeadline,
+                difficulty: taskDifficulty,
+                priority: taskPriority,
+                completed: false
+            };
+
+            tasks.push(task);
+            saveTasks();
+            renderTasks();
+
+            document.getElementById('task-input').value = '';
+            document.getElementById('task-deadline').value = '';
+            document.getElementById('task-difficulty').value = 'Easy';
+            document.getElementById('task-priority').value = 'Low';
+        }
+
+        function toggleTaskCompletion(id) {
+            const task = tasks.find(task => task.id === id);
+            if (task) {
+                task.completed = !task.completed;
+                saveTasks();
+                renderTasks();
+            }
+        }
+
+        function deleteTask(id) {
+            tasks = tasks.filter(task => task.id !== id);
+            saveTasks();
+            renderTasks();
+        }
+
+        function renderTasks() {
+            const taskList = document.getElementById('task-list');
+            taskList.innerHTML = '';
+
+            tasks.forEach(task => {
+                const li = document.createElement('li');
+                const today = new Date().toISOString().split('T')[0];
+
+                li.className = `${!task.completed && task.deadline < today ? 'overdue' : ''} ${task.priority.toLowerCase()}-priority`;
+
+                li.style.textDecoration = task.completed ? 'line-through' : 'none';
+
+                const taskInfo = document.createElement('div');
+                taskInfo.className = 'details';
+                taskInfo.innerHTML = `
+                    <strong>${task.name}</strong>
+                    <span>Deadline: ${task.deadline}</span>
+                    <span>Difficulty: ${task.difficulty}</span>
+                    <span>Priority: ${task.priority}</span>
+                `;
+
+                const taskActions = document.createElement('div');
+                taskActions.innerHTML = `
+                    <button onclick="toggleTaskCompletion(${task.id})">${task.completed ? 'Undo' : 'Complete'}</button>
+                    <button onclick="deleteTask(${task.id})">Delete</button>
+                `;
+
+                li.appendChild(taskInfo);
+                li.appendChild(taskActions);
+                taskList.appendChild(li);
+            });
+
+            updateProgressBar();
+        }
+
+        function saveTasks() {
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+
+        function exportTasks() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(tasks));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "tasks.json");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        }
+
+        function importTasks(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                tasks = JSON.parse(e.target.result);
+                saveTasks();
+                renderTasks();
+            };
+
+            reader.readAsText(file);
+        }
+
+        // Initialize tasks on load
+        renderTasks();
+    </script>
+</body>
+</html>

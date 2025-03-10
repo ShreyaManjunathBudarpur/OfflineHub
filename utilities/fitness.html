@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Workout Planner</title>
+    <style>
+        :root {
+            --primary-color: #5a67d8;
+            --secondary-color: #f4f4f4;
+            --accent-color: #34d399;
+            --text-color: #333;
+            --header-bg: #5a67d8;
+            --container-bg: #ffffff;
+            --item-bg: #f9f9f9;
+            --completed-bg: #d4edda;
+            --button-bg: #e53e3e;
+            --hover-bg: #c53030;
+        }
+
+        body.dark-mode {
+            --primary-color: #1e293b;
+            --secondary-color: #121212;
+            --accent-color: #10b981;
+            --text-color: #f4f4f4;
+            --header-bg: #1f2937;
+            --container-bg: #1c1c1c;
+            --item-bg: #2d2d2d;
+            --completed-bg: #3a3a3a;
+            --button-bg: #ef4444;
+            --hover-bg: #b91c1c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: var(--secondary-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        header {
+            background: var(--header-bg);
+            color: white;
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        header button {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 10px;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        header button:hover {
+            background: #10b981;
+            transform: translateY(-3px);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: var(--container-bg);
+            border-radius: 15px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .workout-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .workout-form input,
+        .workout-form select,
+        .workout-form button {
+            padding: 10px 15px;
+            font-size: 1rem;
+            border-radius: 25px;
+            border: 1px solid #ddd;
+            transition: all 0.3s ease;
+        }
+
+        .workout-form input:focus,
+        .workout-form select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 5px rgba(90, 103, 216, 0.5);
+        }
+
+        .workout-form button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .workout-form button:hover {
+            background: #434bb8;
+            transform: translateY(-2px);
+        }
+
+        .workout-list {
+            margin-top: 20px;
+        }
+
+        .workout-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--item-bg);
+            padding: 15px 20px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            transition: transform 0.2s ease, background 0.3s ease;
+        }
+
+        .workout-item:hover {
+            transform: scale(1.02);
+        }
+
+        .workout-item.completed {
+            background: var(--completed-bg);
+            text-decoration: line-through;
+        }
+
+        .workout-item button {
+            background: var(--button-bg);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .workout-item button:hover {
+            background: var(--hover-bg);
+            transform: translateY(-2px);
+        }
+
+        .settings button {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.3s ease;
+        }
+
+        .settings button:hover {
+            background: #10b981;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            .workout-form {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            header button {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Fitness Workout Planner</h1>
+        <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
+    </header>
+    <div class="container">
+        <form class="workout-form" id="workoutForm">
+            <input type="text" id="exercise" placeholder="Exercise Name" required>
+            <input type="number" id="sets" placeholder="Sets" required>
+            <input type="number" id="reps" placeholder="Reps" required>
+            <select id="category">
+                <option value="Cardio">Cardio</option>
+                <option value="Strength">Strength</option>
+                <option value="Flexibility">Flexibility</option>
+            </select>
+            <button type="submit">Add Workout</button>
+        </form>
+        <div>
+            <h3>Workout List</h3>
+            <div class="workout-list" id="workoutList"></div>
+        </div>
+        <div class="settings">
+            <button onclick="saveWorkouts()">Save Workouts</button>
+            <button onclick="loadWorkouts()">Load Workouts</button>
+            <button onclick="exportWorkouts()">Export Workouts</button>
+        </div>
+    </div>
+    <script>
+        const workoutForm = document.getElementById("workoutForm");
+        const workoutList = document.getElementById("workoutList");
+        let workouts = JSON.parse(localStorage.getItem("workouts")) || [];
+
+        function toggleDarkMode() {
+            document.body.classList.toggle("dark-mode");
+        }
+
+        workoutForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            const exercise = document.getElementById("exercise").value;
+            const sets = document.getElementById("sets").value;
+            const reps = document.getElementById("reps").value;
+            const category = document.getElementById("category").value;
+            workouts.push({ id: Date.now(), exercise, sets, reps, category, completed: false });
+            displayWorkouts();
+            workoutForm.reset();
+        });
+
+        function displayWorkouts() {
+            workoutList.innerHTML = "";
+            workouts.forEach(workout => {
+                const workoutItem = document.createElement("div");
+                workoutItem.className = `workout-item ${workout.completed ? "completed" : ""}`;
+                workoutItem.innerHTML = `
+                    <span>${workout.exercise} - ${workout.sets} sets x ${workout.reps} reps (${workout.category})</span>
+                    <div>
+                        <button onclick="removeWorkout(${workout.id})">Remove</button>
+                        <button onclick="toggleComplete(${workout.id})">Complete</button>
+                    </div>
+                `;
+                workoutList.appendChild(workoutItem);
+            });
+            localStorage.setItem("workouts", JSON.stringify(workouts));
+        }
+
+        function removeWorkout(id) {
+            workouts = workouts.filter(workout => workout.id !== id);
+            displayWorkouts();
+        }
+
+        function toggleComplete(id) {
+            const workout = workouts.find(w => w.id === id);
+            workout.completed = !workout.completed;
+            displayWorkouts();
+        }
+
+        function saveWorkouts() {
+            localStorage.setItem("workouts", JSON.stringify(workouts));
+            alert("Workouts saved locally!");
+        }
+
+        function loadWorkouts() {
+            workouts = JSON.parse(localStorage.getItem("workouts")) || [];
+            displayWorkouts();
+        }
+
+        function exportWorkouts() {
+            const blob = new Blob([JSON.stringify(workouts, null, 2)], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "workouts.json";
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        displayWorkouts();
+    </script>
+</body>
+</html>

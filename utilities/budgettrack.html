@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Budget Tracker</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #1d3557, #457b9d);
+      color: #f1faee;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: #1d3557;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      border-radius: 15px;
+      overflow: hidden;
+      width: 90%;
+      max-width: 600px;
+      padding: 20px;
+    }
+
+    .header {
+      text-align: center;
+      padding: 10px;
+      border-bottom: 2px solid #f1faee;
+    }
+
+    .header h1 {
+      font-size: 2rem;
+      margin: 0;
+    }
+
+    .balance {
+      text-align: center;
+      margin: 20px 0;
+      font-size: 1.5rem;
+    }
+
+    .balance span {
+      font-weight: bold;
+      color: #e63946;
+    }
+
+    /* Form Styles */
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    input, button, select {
+      padding: 10px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+    }
+
+    input {
+      background: #ffffff;
+      color: #000000;
+      outline: none;
+    }
+
+    select {
+      background: #ffffff;
+      color: #000000;
+      outline: none;
+    }
+
+    button {
+      background: #e63946;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #d90429;
+    }
+
+    /* Transactions */
+    .transactions {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      max-height: 300px;
+      overflow-y: auto;
+      border-top: 2px solid #f1faee;
+    }
+
+    .transactions li {
+      background: #457b9d;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+    }
+
+    .transactions li.expense {
+      border-left: 5px solid #e63946;
+    }
+
+    .transactions li.income {
+      border-left: 5px solid #2a9d8f;
+    }
+
+    .delete-btn {
+      background: #e63946;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .delete-btn:hover {
+      background: #d90429;
+    }
+
+    .summary {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    .summary div {
+      text-align: center;
+      background: #457b9d;
+      padding: 10px;
+      border-radius: 5px;
+      flex: 1;
+      margin: 0 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Budget Tracker</h1>
+    </div>
+    <div class="balance">
+      Balance: Rs. <span id="balance">0.00</span>
+    </div>
+    <form id="transaction-form">
+      <input type="text" id="description" placeholder="Enter description" required />
+      <input type="number" id="amount" placeholder="Enter amount (e.g., 100 or -50)" required />
+      <select id="category">
+        <option value="General">General</option>
+        <option value="Food">Food</option>
+        <option value="Transport">Transport</option>
+        <option value="Utilities">Utilities</option>
+        <option value="Shopping">Shopping</option>
+      </select>
+      <button type="submit">Add Transaction</button>
+    </form>
+    <ul class="transactions" id="transaction-list"></ul>
+    <div class="summary">
+      <div>
+        Income: <span id="total-income">0.00</span>
+      </div>
+      <div>
+        Expense: <span id="total-expense">0.00</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const balanceElement = document.getElementById("balance");
+    const transactionForm = document.getElementById("transaction-form");
+    const transactionList = document.getElementById("transaction-list");
+    const totalIncomeElement = document.getElementById("total-income");
+    const totalExpenseElement = document.getElementById("total-expense");
+
+    let transactions = [];
+
+    transactionForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const description = document.getElementById("description").value;
+      const amount = parseFloat(document.getElementById("amount").value);
+      const category = document.getElementById("category").value;
+
+      if (description.trim() === "" || isNaN(amount)) {
+        alert("Please enter valid details");
+        return;
+      }
+
+      const transaction = {
+        id: Date.now(),
+        description,
+        amount,
+        category,
+      };
+
+      transactions.push(transaction);
+      updateUI();
+      transactionForm.reset();
+    });
+
+    function updateUI() {
+      transactionList.innerHTML = "";
+      let totalBalance = 0;
+      let totalIncome = 0;
+      let totalExpense = 0;
+
+      transactions.forEach((transaction) => {
+        totalBalance += transaction.amount;
+        if (transaction.amount > 0) {
+          totalIncome += transaction.amount;
+        } else {
+          totalExpense += Math.abs(transaction.amount);
+        }
+
+        const li = document.createElement("li");
+        li.className = transaction.amount < 0 ? "expense" : "income";
+        li.innerHTML = `
+          ${transaction.description} (${transaction.category})
+          <span>${transaction.amount < 0 ? "-" : "+"}Rs.${Math.abs(transaction.amount).toFixed(2)}</span>
+          <button class="delete-btn" onclick="deleteTransaction(${transaction.id})">x</button>
+        `;
+
+        transactionList.appendChild(li);
+      });
+
+      balanceElement.textContent = totalBalance.toFixed(2);
+      totalIncomeElement.textContent = totalIncome.toFixed(2);
+      totalExpenseElement.textContent = totalExpense.toFixed(2);
+    }
+
+    function deleteTransaction(id) {
+      transactions = transactions.filter((transaction) => transaction.id !== id);
+      updateUI();
+    }
+  </script>
+</body>
+</html>

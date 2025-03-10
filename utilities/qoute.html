@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Quotes</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(120deg, #f6d365, #fda085);
+            color: #333;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+            padding: 30px 50px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        h1 {
+            font-size: 2.8rem;
+            color: #ff7f50;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px #ffa07a;
+            animation: pulse 1.5s infinite;
+        }
+        .quote {
+            font-size: 1.8rem;
+            font-style: italic;
+            margin: 20px 0;
+            color: #333;
+            text-align: justify;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            animation: glow 1.5s infinite alternate;
+        }
+        .author {
+            font-size: 1.4rem;
+            color: #555;
+            margin-top: 15px;
+        }
+        button {
+            padding: 12px 25px;
+            font-size: 1.2rem;
+            color: #fff;
+            background: #ff7f50;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+            animation: swing 1s infinite;
+            position: relative;
+            overflow: hidden;
+        }
+        button:hover {
+            background: #ff4500;
+            transform: scale(1.05);
+        }
+        button::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2));
+            transform: skewX(25deg) skewY(-15deg);
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes pulse {
+            50% {
+                transform: scale(1.05);
+            }
+        }
+        @keyframes glow {
+            50% {
+                text-shadow: 2px 2px 5px rgba(255, 255, 255, 0.5);
+            }
+        }
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+        @keyframes swing {
+            20% {
+                transform: rotate(10deg);
+            }
+            40% {
+                transform: rotate(-10deg);
+            }
+            60% {
+                transform: rotate(5deg);
+            }
+            80% {
+                transform: rotate(-5deg);
+            }
+            100% {
+                transform: rotate(0);
+            }
+        }
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            .quote {
+                font-size: 1.5rem;
+            }
+            button {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Daily Quotes</h1>
+        <div class="date" id="current-date"></div>
+        <div class="quote" id="quote">"Your daily inspiration awaits..."</div>
+        <div class="author" id="author"></div>
+        <button id="new-quote">New Quote</button>
+    </div>
+    <script>
+        const quotes = [
+            { quote: "The only limit to our realization of tomorrow is our doubts of today.", author: "Franklin D. Roosevelt" },
+            { quote: "Do what you can, with what you have, where you are.", author: "Theodore Roosevelt" },
+            { quote: "Act as if what you do makes a difference. It does.", author: "William James" },
+            { quote: "Success is not final, failure is not fatal: It is the courage to continue that counts.", author: "Winston Churchill" },
+            { quote: "You are never too old to set another goal or to dream a new dream.", author: "C.S. Lewis" },
+            { quote: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
+            { quote: "Keep your face always toward the sunshine—and shadows will fall behind you.", author: "Walt Whitman" },
+            { quote: "Opportunities don't happen, you create them.", author: "Chris Grosser" },
+            { quote: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius" },
+            { quote: "The greatest glory in living lies not in never falling, but in rising every time we fall.", author: "Nelson Mandela" },
+            { quote: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+            { quote: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
+            { quote: "The best and most beautiful things in the world cannot be seen or even touched - they must be felt with the heart.", author: "Helen Keller" }
+        ];
+
+        const dateElement = document.getElementById('current-date');
+        const quoteElement = document.getElementById('quote');
+        const authorElement = document.getElementById('author');
+        const newQuoteButton = document.getElementById('new-quote');
+
+        function updateDate() {
+            const today = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            dateElement.textContent = today.toLocaleDateString('en-US', options);
+        }
+
+        function updateQuote() {
+            const randomIndex = Math.floor(Math.random() * quotes.length);
+            const randomQuote = quotes[randomIndex];
+            quoteElement.textContent = randomQuote.quote;
+            authorElement.textContent = `- ${randomQuote.author}`;
+        }
+
+        newQuoteButton.addEventListener('click', updateQuote);
+        updateDate();
+        updateQuote();
+    </script>
+</body>
+</html>

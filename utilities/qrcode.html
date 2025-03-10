@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline QR Code Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            padding: 40px;
+            max-width: 450px;
+            width: 100%;
+        }
+
+        .container h1 {
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            font-size: 1rem;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #6a11cb;
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            background-color: #6a11cb;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        button:hover {
+            background-color: #4b0f8c;
+        }
+
+        #qrcode {
+            margin: 20px auto;
+            width: 256px;
+            height: 256px;
+            border: 1px solid #ddd;
+            display: none;
+        }
+
+        .download-btn {
+            display: none;
+            padding: 12px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            background-color: #6a11cb;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background-color: #4b0f8c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Offline QR Code Generator</h1>
+        <input type="text" id="dataInput" placeholder="Enter text or URL" />
+        <button onclick="generateQRCode()">Generate QR Code</button>
+        <div id="qrcode"></div>
+        <button class="download-btn" onclick="downloadQRCode()">Download QR Code</button>
+    </div>
+
+    <!-- Include QR Code Library -->
+    <script src="qrcode.min.js"></script>
+    <script>
+        let qrCode;
+
+        function generateQRCode() {
+            const data = document.getElementById("dataInput").value.trim();
+            const qrContainer = document.getElementById("qrcode");
+            const downloadButton = document.querySelector(".download-btn");
+
+            if (!data) {
+                alert("Please enter some text or URL!");
+                return;
+            }
+
+            // Clear previous QR code
+            qrContainer.innerHTML = "";
+            downloadButton.style.display = "none";
+
+            // Generate QR Code
+            qrCode = new QRCode(qrContainer, {
+                text: data,
+                width: 256,
+                height: 256,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H,
+            });
+
+            qrContainer.style.display = "block";
+            downloadButton.style.display = "inline-block";
+        }
+
+        function downloadQRCode() {
+            const qrCanvas = document.querySelector("#qrcode canvas");
+            const image = qrCanvas.toDataURL("image/png");
+
+            // Create a download link and click it programmatically
+            const link = document.createElement("a");
+            link.href = image;
+            link.download = "qr_code.png";
+            link.click();
+        }
+    </script>
+</body>
+</html>

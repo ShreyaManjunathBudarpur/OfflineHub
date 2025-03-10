@@ -1,0 +1,150 @@
+{
+  "en": {
+    "es": {
+      "hello": "hola",
+      "world": "mundo",
+      "how are you?": "¿cómo estás?",
+      "good morning": "buenos días",
+      "good night": "buenas noches",
+      "thank you": "gracias",
+      "yes": "sí",
+      "no": "no",
+      "please": "por favor",
+      "welcome": "bienvenido",
+       "apple": "manzana", "banana": "banana", "bread": "pan", "milk": "leche", "cheese": "queso", "chicken": "pollo", "rice": "arroz", "fish": "pescado", "egg": "huevo", "sugar": "azúcar", "train": "manzana", "plane": "banana", "car": "pan", "bus": "leche", "ticket": "queso", "passport": "pollo", "luggage": "arroz", "station": "pescado", "airport": "huevo", "hotel": "azúcar", "shop": "manzana", "market": "banana", "price": "pan", "money": "leche", "discount": "queso", "receipt": "pollo", "bag": "arroz", "customer": "pescado", "cash": "huevo", "credit": "azúcar", "happy": "manzana", "sad": "banana", "angry": "pan", "surprised": "leche", "scared": "queso", "excited": "pollo", "nervous": "arroz", "bored": "pescado", "proud": "huevo", "confused": "azúcar", "tree": "manzana", "flower": "banana", "river": "pan", "mountain": "leche", "ocean": "queso", "forest": "pollo", "sky": "arroz", "star": "pescado", "moon": "huevo", "sun": "azúcar", "computer": "manzana", "phone": "banana", "internet": "pan", "keyboard": "leche", "mouse": "queso", "screen": "pollo", "software": "arroz", "camera": "pescado", "printer": "huevo", "battery": "azúcar"
+    },
+    "fr": {
+      "hello": "bonjour",
+      "world": "monde",
+      "how are you?": "comment ça va?",
+      "good morning": "bonjour",
+      "good night": "bonne nuit",
+      "thank you": "merci",
+      "yes": "oui",
+      "no": "non",
+      "please": "s'il vous plaît",
+      "welcome": "bienvenue",
+      "apple": "pomme", "banana": "banane", "bread": "pain", "milk": "lait", "cheese": "fromage", "chicken": "poulet", "rice": "riz", "fish": "poisson", "egg": "œuf", "sugar": "sucre", "train": "pomme", "plane": "banane", "car": "pain", "bus": "lait", "ticket": "fromage", "passport": "poulet", "luggage": "riz", "station": "poisson", "airport": "œuf", "hotel": "sucre", "shop": "pomme", "market": "banane", "price": "pain", "money": "lait", "discount": "fromage", "receipt": "poulet", "bag": "riz", "customer": "poisson", "cash": "œuf", "credit": "sucre", "happy": "pomme", "sad": "banane", "angry": "pain", "surprised": "lait", "scared": "fromage", "excited": "poulet", "nervous": "riz", "bored": "poisson", "proud": "œuf", "confused": "sucre", "tree": "pomme", "flower": "banane", "river": "pain", "mountain": "lait", "ocean": "fromage", "forest": "poulet", "sky": "riz", "star": "poisson", "moon": "œuf", "sun": "sucre", "computer": "pomme", "phone": "banane", "internet": "pain", "keyboard": "lait", "mouse": "fromage", "screen": "poulet", "software": "riz", "camera": "poisson", "printer": "œuf", "battery": "sucre"
+    },
+    "de": {
+      "hello": "hallo",
+      "world": "welt",
+      "how are you?": "wie geht's?",
+      "good morning": "guten Morgen",
+      "good night": "gute Nacht",
+      "thank you": "danke",
+      "yes": "ja",
+      "no": "nein",
+      "please": "bitte",
+      "welcome": "willkommen",
+"apple": "apfel", "banana": "banane", "bread": "brot", "milk": "milch", "cheese": "käse", "chicken": "hähnchen", "rice": "reis", "fish": "fisch", "egg": "ei", "sugar": "zucker", "train": "apfel", "plane": "banane", "car": "brot", "bus": "milch", "ticket": "käse", "passport": "hähnchen", "luggage": "reis", "station": "fisch", "airport": "ei", "hotel": "zucker", "shop": "apfel", "market": "banane", "price": "brot", "money": "milch", "discount": "käse", "receipt": "hähnchen", "bag": "reis", "customer": "fisch", "cash": "ei", "credit": "zucker", "happy": "apfel", "sad": "banane", "angry": "brot", "surprised": "milch", "scared": "käse", "excited": "hähnchen", "nervous": "reis", "bored": "fisch", "proud": "ei", "confused": "zucker", "tree": "apfel", "flower": "banane", "river": "brot", "mountain": "milch", "ocean": "käse", "forest": "hähnchen", "sky": "reis", "star": "fisch", "moon": "ei", "sun": "zucker", "computer": "apfel", "phone": "banane", "internet": "brot", "keyboard": "milch", "mouse": "käse", "screen": "hähnchen", "software": "reis", "camera": "fisch", "printer": "ei", "battery": "zucker"
+    },
+    "it": {
+      "hello": "ciao",
+      "world": "mondo",
+      "how are you?": "come stai?",
+      "good morning": "buongiorno",
+      "good night": "buonanotte",
+      "thank you": "grazie",
+      "yes": "sì",
+      "no": "no",
+      "please": "per favore",
+      "welcome": "benvenuto",
+      "apple": "mela", "banana": "banana", "bread": "pane", "milk": "latte", "cheese": "formaggio", "chicken": "pollo", "rice": "riso", "fish": "pesce", "egg": "uovo", "sugar": "zucchero", "train": "mela", "plane": "banana", "car": "pane", "bus": "latte", "ticket": "formaggio", "passport": "pollo", "luggage": "riso", "station": "pesce", "airport": "uovo", "hotel": "zucchero", "shop": "mela", "market": "banana", "price": "pane", "money": "latte", "discount": "formaggio", "receipt": "pollo", "bag": "riso", "customer": "pesce", "cash": "uovo", "credit": "zucchero", "happy": "mela", "sad": "banana", "angry": "pane", "surprised": "latte", "scared": "formaggio", "excited": "pollo", "nervous": "riso", "bored": "pesce", "proud": "uovo", "confused": "zucchero", "tree": "mela", "flower": "banana", "river": "pane", "mountain": "latte", "ocean": "formaggio", "forest": "pollo", "sky": "riso", "star": "pesce", "moon": "uovo", "sun": "zucchero", "computer": "mela", "phone": "banana", "internet": "pane", "keyboard": "latte", "mouse": "formaggio", "screen": "pollo", "software": "riso", "camera": "pesce", "printer": "uovo", "battery": "zucchero"
+    },
+    "hi": {
+      "hello": "नमस्ते",
+      "world": "दुनिया",
+      "how are you?": "आप कैसे हैं?",
+      "good morning": "सुप्रभात",
+      "good night": "शुभ रात्रि",
+      "thank you": "धन्यवाद",
+      "yes": "हाँ",
+      "no": "नहीं",
+      "please": "कृपया",
+      "welcome": "स्वागत है",
+       "apple": "सेब", "banana": "केला", "bread": "रोटी", "milk": "दूध", "cheese": "पनीर", "chicken": "मुर्गी", "rice": "चावल", "fish": "मछली", "egg": "अंडा", "sugar": "चीनी", "train": "सेब", "plane": "केला", "car": "रोटी", "bus": "दूध", "ticket": "पनीर", "passport": "मुर्गी", "luggage": "चावल", "station": "मछली", "airport": "अंडा", "hotel": "चीनी", "shop": "सेब", "market": "केला", "price": "रोटी", "money": "दूध", "discount": "पनीर", "receipt": "मुर्गी", "bag": "चावल", "customer": "मछली", "cash": "अंडा", "credit": "चीनी", "happy": "सेब", "sad": "केला", "angry": "रोटी", "surprised": "दूध", "scared": "पनीर", "excited": "मुर्गी", "nervous": "चावल", "bored": "मछली", "proud": "अंडा", "confused": "चीनी", "tree": "सेब", "flower": "केला", "river": "रोटी", "mountain": "दूध", "ocean": "पनीर", "forest": "मुर्गी", "sky": "चावल", "star": "मछली", "moon": "अंडा", "sun": "चीनी", "computer": "सेब", "phone": "केला", "internet": "रोटी", "keyboard": "दूध", "mouse": "पनीर", "screen": "मुर्गी", "software": "चावल", "camera": "मछली", "printer": "अंडा", "battery": "चीनी"
+    },
+    "ta": {
+      "hello": "வணக்கம்",
+      "world": "உலகம்",
+      "how are you?": "நீங்கள் எப்படி இருக்கிறீர்கள்?",
+      "good morning": "காலை வணக்கம்",
+      "good night": "இரவு வணக்கம்",
+      "thank you": "நன்றி",
+      "yes": "ஆம்",
+      "no": "இல்லை",
+      "please": "தயவு செய்து",
+      "welcome": "வரவேற்கிறோம்",
+       "apple": "ஆப்பிள்", "banana": "வாழைப்பழம்", "bread": "ரொட்டி", "milk": "பால்", "cheese": "சீஸ்", "chicken": "கோழி", "rice": "அரிசி", "fish": "மீன்", "egg": "முட்டை", "sugar": "சர்க்கரை", "train": "ஆப்பிள்", "plane": "வாழைப்பழம்", "car": "ரொட்டி", "bus": "பால்", "ticket": "சீஸ்", "passport": "கோழி", "luggage": "அரிசி", "station": "மீன்", "airport": "முட்டை", "hotel": "சர்க்கரை", "shop": "ஆப்பிள்", "market": "வாழைப்பழம்", "price": "ரொட்டி", "money": "பால்", "discount": "சீஸ்", "receipt": "கோழி", "bag": "அரிசி", "customer": "மீன்", "cash": "முட்டை", "credit": "சர்க்கரை", "happy": "ஆப்பிள்", "sad": "வாழைப்பழம்", "angry": "ரொட்டி", "surprised": "பால்", "scared": "சீஸ்", "excited": "கோழி", "nervous": "அரிசி", "bored": "மீன்", "proud": "முட்டை", "confused": "சர்க்கரை", "tree": "ஆப்பிள்", "flower": "வாழைப்பழம்", "river": "ரொட்டி", "mountain": "பால்", "ocean": "சீஸ்", "forest": "கோழி", "sky": "அரிசி", "star": "மீன்", "moon": "முட்டை", "sun": "சர்க்கரை", "computer": "ஆப்பிள்", "phone": "வாழைப்பழம்", "internet": "ரொட்டி", "keyboard": "பால்", "mouse": "சீஸ்", "screen": "கோழி", "software": "அரிசி", "camera": "மீன்", "printer": "முட்டை", "battery": "சர்க்கரை"
+    },
+    "kn": {
+      "hello": "ನಮಸ್ಕಾರ",
+      "world": "ಲೋಕ",
+      "how are you?": "ನೀವು ಹೇಗಿದ್ದೀರಿ?",
+      "good morning": "ಶುಭೋದಯ",
+      "good night": "ಶುಭ ರಾತ್ರಿ",
+      "thank you": "ಧನ್ಯವಾದಗಳು",
+      "yes": "ಹೌದು",
+      "no": "ಇಲ್ಲ",
+      "please": "ದಯವಿಟ್ಟು",
+      "welcome": "ಸ್ವಾಗತ",
+      "apple": "ಸೇಬು", "banana": "ಬಾಳೆಹಣ್ಣು", "bread": "ರೊಟ್ಟಿ", "milk": "ಹಾಲು", "cheese": "ಚೀಸ್", "chicken": "ಕೋಳಿ", "rice": "ಅಕ್ಕಿ", "fish": "ಮೀನು", "egg": "ಮೂಟೆ", "sugar": "ಸಕ್ಕರೆ", "train": "ಸೇಬು", "plane": "ಬಾಳೆಹಣ್ಣು", "car": "ರೊಟ್ಟಿ", "bus": "ಹಾಲು", "ticket": "ಚೀಸ್", "passport": "ಕೋಳಿ", "luggage": "ಅಕ್ಕಿ", "station": "ಮೀನು", "airport": "ಮೂಟೆ", "hotel": "ಸಕ್ಕರೆ", "shop": "ಸೇಬು", "market": "ಬಾಳೆಹಣ್ಣು", "price": "ರೊಟ್ಟಿ", "money": "ಹಾಲು", "discount": "ಚೀಸ್", "receipt": "ಕೋಳಿ", "bag": "ಅಕ್ಕಿ", "customer": "ಮೀನು", "cash": "ಮೂಟೆ", "credit": "ಸಕ್ಕರೆ", "happy": "ಸೇಬು", "sad": "ಬಾಳೆಹಣ್ಣು", "angry": "ರೊಟ್ಟಿ", "surprised": "ಹಾಲು", "scared": "ಚೀಸ್", "excited": "ಕೋಳಿ", "nervous": "ಅಕ್ಕಿ", "bored": "ಮೀನು", "proud": "ಮೂಟೆ", "confused": "ಸಕ್ಕರೆ", "tree": "ಸೇಬು", "flower": "ಬಾಳೆಹಣ್ಣು", "river": "ರೊಟ್ಟಿ", "mountain": "ಹಾಲು", "ocean": "ಚೀಸ್", "forest": "ಕೋಳಿ", "sky": "ಅಕ್ಕಿ", "star": "ಮೀನು", "moon": "ಮೂಟೆ", "sun": "ಸಕ್ಕರೆ", "computer": "ಸೇಬು", "phone": "ಬಾಳೆಹಣ್ಣು", "internet": "ರೊಟ್ಟಿ", "keyboard": "ಹಾಲು", "mouse": "ಚೀಸ್", "screen": "ಕೋಳಿ", "software": "ಅಕ್ಕಿ", "camera": "ಮೀನು", "printer": "ಮೂಟೆ", "battery": "ಸಕ್ಕರೆ"
+    },
+    "te": {
+      "hello": "నమస్తే",
+      "world": "ప్రపంచం",
+      "how are you?": "మీరు ఎలా ఉన్నారు?",
+      "good morning": "శుభోదయం",
+      "good night": "శుభ రాత్రి",
+      "thank you": "ధన్యవాదాలు",
+      "yes": "అవును",
+      "no": "కాదు",
+      "please": "దయచేసి",
+      "welcome": "స్వాగతం",
+      "apple": "ఆపిల్", "banana": "అరటి", "bread": "రొట్టె", "milk": "పాలు", "cheese": "చీజ్", "chicken": "కోడి", "rice": "బియ్యం", "fish": "చేప", "egg": "గుడ్డు", "sugar": "చెక్కర", "train": "ఆపిల్", "plane": "అరటి", "car": "రొట్టె", "bus": "పాలు", "ticket": "చీజ్", "passport": "కోడి", "luggage": "బియ్యం", "station": "చేప", "airport": "గుడ్డు", "hotel": "చెక్కర", "shop": "ఆపిల్", "market": "అరటి", "price": "రొట్టె", "money": "పాలు", "discount": "చీజ్", "receipt": "కోడి", "bag": "బియ్యం", "customer": "చేప", "cash": "గుడ్డు", "credit": "చెక్కర", "happy": "ఆపిల్", "sad": "అరటి", "angry": "రొట్టె", "surprised": "పాలు", "scared": "చీజ్", "excited": "కోడి", "nervous": "బియ్యం", "bored": "చేప", "proud": "గుడ్డు", "confused": "చెక్కర", "tree": "ఆపిల్", "flower": "అరటి", "river": "రొట్టె", "mountain": "పాలు", "ocean": "చీజ్", "forest": "కోడి", "sky": "బియ్యం", "star": "చేప", "moon": "గుడ్డు", "sun": "చెక్కర", "computer": "ఆపిల్", "phone": "అరటి", "internet": "రొట్టె", "keyboard": "పాలు", "mouse": "చీజ్", "screen": "కోడి", "software": "బియ్యం", "camera": "చేప", "printer": "గుడ్డు", "battery": "చెక్కర"
+    }
+  },
+  "ta": {
+    "en": {
+      "வணக்கம்": "hello",
+      "உலகம்": "world",
+      "நீங்கள் எப்படி இருக்கிறீர்கள்?": "how are you?",
+      "காலை வணக்கம்": "good morning",
+      "இரவு வணக்கம்": "good night",
+      "நன்றி": "thank you",
+      "ஆம்": "yes",
+      "இல்லை": "no",
+      "தயவு செய்து": "please",
+      "வரவேற்கிறோம்": "welcome"
+    }
+  },
+  "kn": {
+    "en": {
+      "ನಮಸ್ಕಾರ": "hello",
+      "ಲೋಕ": "world",
+      "ನೀವು ಹೇಗಿದ್ದೀರಿ?": "how are you?",
+      "ಶುಭೋದಯ": "good morning",
+      "ಶುಭ ರಾತ್ರಿ": "good night",
+      "ಧನ್ಯವಾದಗಳು": "thank you",
+      "ಹೌದು": "yes",
+      "ಇಲ್ಲ": "no",
+      "ದಯವಿಟ್ಟು": "please",
+      "ಸ್ವಾಗತ": "welcome"
+    }
+  },
+  "te": {
+    "en": {
+      "నమస్తే": "hello",
+      "ప్రపంచం": "world",
+      "మీరు ఎలా ఉన్నారు?": "how are you?",
+      "శుభోదయం": "good morning",
+      "శుభ రాత్రి": "good night",
+      "ధన్యవాదాలు": "thank you",
+      "అవును": "yes",
+      "కాదు": "no",
+      "దయచేసి": "please",
+      "స్వాగతం": "welcome"
+    }
+  }
+}

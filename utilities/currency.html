@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Converter</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+            color: #444;
+            overflow: hidden;
+        }
+
+        #currency-converter {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            padding: 50px;
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        h2 {
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            color: #333;
+        }
+
+        select {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-right: 10px;
+            background-color: #f9f9f9;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        select:focus {
+            border-color: #74ebd5;
+            outline: none;
+            box-shadow: 0 0 10px rgba(116, 235, 213, 0.6);
+        }
+
+        input[type="number"] {
+            width: 140px;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-right: 10px;
+            background-color: #f9f9f9;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input[type="number"]:focus {
+            border-color: #74ebd5;
+            outline: none;
+            box-shadow: 0 0 10px rgba(116, 235, 213, 0.6);
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+
+        #currency-result {
+            margin-top: 20px;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #444;
+        }
+
+        #error-message {
+            color: #ff5555;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 600px) {
+            h2 {
+                font-size: 2em;
+            }
+
+            input[type="number"] {
+                width: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section id="currency-converter">
+        <h2>Currency Converter</h2>
+
+        <div>
+            <select id="currency-from">
+                <option value="USD">USD - US Dollar</option>
+                <option value="EUR">EUR - Euro</option>
+                <option value="GBP">GBP - British Pound</option>
+                <option value="INR">INR - Indian Rupee</option>
+                <option value="JPY">JPY - Japanese Yen</option>
+                <option value="CAD">CAD - Canadian Dollar</option>
+                <option value="AUD">AUD - Australian Dollar</option>
+                <option value="CNY">CNY - Chinese Yuan</option>
+            </select>
+            <select id="currency-to">
+                <option value="USD">USD - US Dollar</option>
+                <option value="EUR">EUR - Euro</option>
+                <option value="GBP">GBP - British Pound</option>
+                <option value="INR">INR - Indian Rupee</option>
+                <option value="JPY">JPY - Japanese Yen</option>
+                <option value="CAD">CAD - Canadian Dollar</option>
+                <option value="AUD">AUD - Australian Dollar</option>
+                <option value="CNY">CNY - Chinese Yuan</option>
+            </select>
+        </div>
+
+        <input type="number" id="currency-input" placeholder="Enter amount" min="0" step="0.01"> 
+
+        <button onclick="convertCurrency()">Convert</button>
+
+        <p id="currency-result"></p>
+        <p id="error-message"></p> 
+    </section>
+
+    <script>
+        function convertCurrency() {
+            const currencyFrom = document.getElementById('currency-from').value;
+            const currencyTo = document.getElementById('currency-to').value;
+            const value = parseFloat(document.getElementById('currency-input').value);
+
+            if (isNaN(value) || value <= 0) {
+                document.getElementById('error-message').textContent = "Please enter a valid amount.";
+                document.getElementById('currency-result').textContent = "";
+                return;
+            } else {
+                document.getElementById('error-message').textContent = ""; 
+            }
+
+            // Updated exchange rates (2025)
+            const rates = {
+                'USD_EUR': 0.91,
+                'USD_GBP': 0.77,
+                'USD_INR': 82.67,
+                'USD_JPY': 135.23,
+                'USD_CAD': 1.35,
+                'USD_AUD': 1.57,
+                'USD_CNY': 7.32,
+                'EUR_USD': 1.10,
+                'EUR_GBP': 0.85,
+                'EUR_INR': 91.02,
+                'EUR_JPY': 148.71,
+                'EUR_CAD': 1.48,
+                'EUR_AUD': 1.72,
+                'EUR_CNY': 8.05,
+                'GBP_USD': 1.30,
+                'GBP_EUR': 1.17,
+                'GBP_INR': 106.54,
+                'GBP_JPY': 175.61,
+                'GBP_CAD': 1.75,
+                'GBP_AUD': 2.04,
+                'GBP_CNY': 9.50,
+                'INR_USD': 0.012,
+                'INR_EUR': 0.011,
+                'INR_GBP': 0.0094,
+                'INR_JPY': 1.64,
+                'INR_CAD': 0.016,
+                'INR_AUD': 0.019,
+                'INR_CNY': 0.088,
+                'JPY_USD': 0.0074,
+                'JPY_EUR': 0.0067,
+                'JPY_GBP': 0.0057,
+                'JPY_INR': 0.61,
+                'JPY_CAD': 0.010,
+                'JPY_AUD': 0.012,
+                'JPY_CNY': 0.054,
+                'CAD_USD': 0.74,
+                'CAD_EUR': 0.67,
+                'CAD_GBP': 0.57,
+                'CAD_INR': 60.98,
+                'CAD_JPY': 99.82,
+                'CAD_AUD': 1.16,
+                'CAD_CNY': 5.41,
+                'AUD_USD': 0.64,
+                'AUD_EUR': 0.58,
+                'AUD_GBP': 0.49,
+                'AUD_INR': 52.59,
+                'AUD_JPY': 85.64,
+                'AUD_CAD': 0.86,
+                'AUD_CNY': 4.68,
+                'CNY_USD': 0.14,
+                'CNY_EUR': 0.12,
+                'CNY_GBP': 0.11,
+                'CNY_INR': 11.21,
+                'CNY_JPY': 18.25,
+                'CNY_CAD': 0.19,
+                'CNY_AUD': 0.21
+            };
+
+            const key = `${currencyFrom}_${currencyTo}`;
+
+            if (rates[key]) {
+                const result = value * rates[key];
+                document.getElementById('currency-result').textContent = 
+                    `${value} ${currencyFrom} is ${result.toFixed(2)} ${currencyTo}`;
+            } else {
+                document.getElementById('error-message').textContent = "Invalid currency combination.";
+                document.getElementById('currency-result').textContent = "";
+            }
+        }
+    </script>
+</body>
+</html>

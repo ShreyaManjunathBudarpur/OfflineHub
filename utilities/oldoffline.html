@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OfflineHub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <header>
+        <h1>OfflineHub</h1>
+        <p id="greeting"></p>
+        <select id="theme-selector" onchange="changeTheme()">
+            <option value="default">Default</option>
+            <option value="dark">Dark</option>
+            <option value="pastel">Pastel</option>
+        </select>
+    </header>
+    <main>
+        <div id="menu-container">
+            <button aria-label="Open Translator" onclick="showSection('translator')"><i class="fas fa-globe"></i> Translator</button>
+            <button aria-label="Open Unit Converter" onclick="showSection('unit-converter')"><i class="fas fa-ruler"></i> Unit Converter</button>
+            <button aria-label="Open Currency Converter" onclick="showSection('currency-converter')"><i class="fas fa-dollar-sign"></i> Currency Converter</button>
+            <button aria-label="Open Stopwatch" onclick="showSection('stopwatch')"><i class="fas fa-stopwatch"></i> Stopwatch</button>
+            <button aria-label="Open Tic-Tac-Toe" onclick="showSection('tic-tac-toe')"><i class="fas fa-gamepad"></i> Tic-Tac-Toe</button>
+        </div>
+        <div id="content">
+            <!-- Sections -->
+            <section id="translator" class="app-section">
+                <h2>Translator</h2>
+                <select id="lang-from">
+                    <option value="en">English</option>
+                    <option value="es">Spanish</option>
+                    <option value="hi">Hindi</option>
+                    <option value="kn">Kannada</option>
+                    <option value="te">Telugu</option>
+                    <option value="mr">Marathi</option>
+                </select>
+                <select id="lang-to">
+                    <option value="es">Spanish</option>
+                    <option value="en">English</option>
+                    <option value="hi">Hindi</option>
+                    <option value="kn">Kannada</option>
+                    <option value="te">Telugu</option>
+                    <option value="mr">Marathi</option>
+                </select>
+                <textarea id="text-input" placeholder="Enter text to translate"></textarea>
+                <button onclick="translateText()">Translate</button>
+                <p id="translation-result"></p>
+            </section>
+            <section id="unit-converter" class="app-section">
+                <h2>Unit Converter</h2>
+                <select id="unit-from">
+                    <option value="meters">Meters</option>
+                    <option value="kilometers">Kilometers</option>
+                    <option value="miles">Miles</option>
+                    <option value="feet">Feet</option>
+                </select>
+                <select id="unit-to">
+                    <option value="meters">Meters</option>
+                    <option value="kilometers">Kilometers</option>
+                    <option value="miles">Miles</option>
+                    <option value="feet">Feet</option>
+                </select>
+                <input type="number" id="unit-input" placeholder="Enter value">
+                <button onclick="convertUnits()">Convert</button>
+                <p id="conversion-result"></p>
+            </section>
+            <section id="currency-converter" class="app-section">
+                <h2>Currency Converter</h2>
+                <select id="currency-from">
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="GBP">GBP</option>
+                    <option value="INR">INR</option>
+                    <option value="JPY">JPY</option>
+                </select>
+                <select id="currency-to">
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="GBP">GBP</option>
+                    <option value="INR">INR</option>
+                    <option value="JPY">JPY</option>
+                </select>
+                <input type="number" id="currency-input" placeholder="Enter amount">
+                <button onclick="convertCurrency()">Convert</button>
+                <p id="currency-result"></p>
+            </section>
+            <section id="stopwatch" class="app-section">
+                <h2>Stopwatch</h2>
+                <p id="timer">00:00:00</p>
+                <button onclick="startStopwatch()">Start</button>
+                <button onclick="stopStopwatch()">Stop</button>
+                <button onclick="resetStopwatch()">Reset</button>
+            </section>
+            <section id="tic-tac-toe" class="app-section">
+                <h2>Tic-Tac-Toe</h2>
+                <div id="tic-tac-toe-board">
+                    <div class="cell" onclick="makeMove(this, 0)"></div>
+                    <div class="cell" onclick="makeMove(this, 1)"></div>
+                    <div class="cell" onclick="makeMove(this, 2)"></div>
+                    <div class="cell" onclick="makeMove(this, 3)"></div>
+                    <div class="cell" onclick="makeMove(this, 4)"></div>
+                    <div class="cell" onclick="makeMove(this, 5)"></div>
+                    <div class="cell" onclick="makeMove(this, 6)"></div>
+                    <div class="cell" onclick="makeMove(this, 7)"></div>
+                    <div class="cell" onclick="makeMove(this, 8)"></div>
+                </div>
+                <p id="tic-tac-toe-result"></p>
+                <button onclick="resetBoard()">Reset Game</button>
+                <p>Player X Score: <span id="score-x">0</span> | Player O Score: <span id="score-o">0</span></p>
+            </section>
+        </div>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>

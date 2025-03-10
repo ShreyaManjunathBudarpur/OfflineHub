@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Unit Converter</title>
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #6dd5ed, #2193b0);
+            overflow: hidden;
+            transition: background 0.5s ease;
+        }
+
+        body.dark-mode-active {
+            background: linear-gradient(135deg, #2c2c2c, #3a3a3a);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        .container.dark-mode-active {
+            background-color: #333;
+            color: #fff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #2193b0;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: color 0.3s ease;
+        }
+
+        .dark-mode-active h1 {
+            color: #f0f4f8;
+        }
+
+        label {
+            font-size: 1rem;
+            margin-bottom: 8px;
+            font-weight: bold;
+            display: block;
+            text-align: left;
+            transition: color 0.3s ease;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            font-size: 1rem;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border: 1px solid #2193b0;
+            background-color: #e6f7ff;
+            transform: scale(1.02);
+        }
+
+        input.dark-mode-active, select.dark-mode-active {
+            background-color: #555;
+            color: #fff;
+            border: 1px solid #444;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            font-size: 1.1rem;
+            background-color: #2193b0;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            transition: transform 0.2s ease, background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #1e88a8;
+            transform: translateY(-3px);
+        }
+
+        button:active {
+            background-color: #1b6d84;
+            transform: translateY(0);
+        }
+
+        .result {
+            font-size: 1.25rem;
+            color: #2193b0;
+            font-weight: bold;
+            margin-top: 20px;
+            text-align: center;
+            transition: color 0.3s ease;
+        }
+
+        .dark-mode-active .result {
+            color: #f0f4f8;
+        }
+
+        .history {
+            margin-top: 30px;
+        }
+
+        .history h2 {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .history ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .history li {
+            background-color: #f9f9f9;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            font-size: 1rem;
+            color: #333;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .history li:hover {
+            background-color: #2193b0;
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .history li.dark-mode-active {
+            background-color: #444;
+            color: #fff;
+        }
+
+        .dark-mode {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .dark-mode:hover {
+            background: #555;
+            transform: scale(1.05);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <button class="dark-mode" onclick="toggleDarkMode()">🌙</button>
+    <div class="container">
+        <h1>Dynamic Unit Converter</h1>
+
+        <label for="inputValue">Enter Value:</label>
+        <input type="number" id="inputValue" placeholder="Enter a number">
+
+        <label for="inputUnit">Select Input Unit:</label>
+        <select id="inputUnit">
+            <option value="years">Years</option>
+            <option value="days">Days</option>
+            <option value="hours">Hours</option>
+            <option value="minutes">Minutes</option>
+            <option value="seconds">Seconds</option>
+        </select>
+
+        <label for="outputUnit">Select Output Unit:</label>
+        <select id="outputUnit">
+            <option value="years">Years</option>
+            <option value="days">Days</option>
+            <option value="hours">Hours</option>
+            <option value="minutes">Minutes</option>
+            <option value="seconds">Seconds</option>
+        </select>
+
+        <button onclick="convertTime()">Convert</button>
+        <button onclick="resetFields()">Reset</button>
+
+        <div class="result" id="result"></div>
+
+        <div class="history" id="history">
+            <h2>Conversion History:</h2>
+            <ul id="historyList"></ul>
+        </div>
+    </div>
+
+    <script>
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode-active');
+            document.querySelector('.container').classList.toggle('dark-mode-active');
+            document.querySelectorAll('input, select').forEach(el => el.classList.toggle('dark-mode-active'));
+            document.querySelectorAll('.history li').forEach(el => el.classList.toggle('dark-mode-active'));
+            document.querySelector('h1').classList.toggle('dark-mode-active');
+            document.querySelector('.result').classList.toggle('dark-mode-active');
+        }
+
+        function convertTime() {
+            const inputValue = parseFloat(document.getElementById('inputValue').value);
+            const inputUnit = document.getElementById('inputUnit').value;
+            const outputUnit = document.getElementById('outputUnit').value;
+            const resultElement = document.getElementById('result');
+            const historyList = document.getElementById('historyList');
+
+            if (isNaN(inputValue)) {
+                resultElement.textContent = 'Please enter a valid number.';
+                return;
+            }
+
+            const conversionRates = {
+                years: { days: 365, hours: 8760, minutes: 525600, seconds: 31536000 },
+                days: { years: 1 / 365, hours: 24, minutes: 1440, seconds: 86400 },
+                hours: { years: 1 / 8760, days: 1 / 24, minutes: 60, seconds: 3600 },
+                minutes: { years: 1 / 525600, days: 1 / 1440, hours: 1 / 60, seconds: 60 },
+                seconds: { years: 1 / 31536000, days: 1 / 86400, hours: 1 / 3600, minutes: 1 / 60 },
+            };
+
+            let convertedValue;
+            if (inputUnit === outputUnit) {
+                convertedValue = inputValue;
+            } else if (conversionRates[inputUnit][outputUnit]) {
+                convertedValue = inputValue * conversionRates[inputUnit][outputUnit];
+            } else {
+                convertedValue = inputValue / conversionRates[outputUnit][inputUnit];
+            }
+
+            resultElement.textContent = `${inputValue} ${inputUnit} = ${convertedValue.toFixed(2)} ${outputUnit}`;
+
+            const historyItem = document.createElement('li');
+            historyItem.textContent = resultElement.textContent;
+            historyList.appendChild(historyItem);
+        }
+
+        function resetFields() {
+            document.getElementById('inputValue').value = '';
+            document.getElementById('inputUnit').selectedIndex = 0;
+            document.getElementById('outputUnit').selectedIndex = 0;
+            document.getElementById('result').textContent = '';
+        }
+    </script>
+</body>
+</html>

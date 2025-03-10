@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enhanced Drawing App</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        background-color: #f5f5f5;
+        font-family: "Roboto", sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+      }
+
+      canvas {
+        border: 2px solid steelblue;
+        cursor: crosshair;
+        position: relative;
+      }
+
+      .toolbox {
+        background-color: steelblue;
+        border: 1px solid slateblue;
+        display: flex;
+        flex-wrap: wrap;
+        width: 804px;
+        padding: 1rem;
+        gap: 0.5rem;
+        justify-content: space-between;
+      }
+
+      .toolbox > * {
+        background-color: #fff;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        height: 50px;
+        width: auto;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: all 0.2s ease-in-out;
+      }
+
+      .toolbox > *:hover {
+        background-color: lightblue;
+      }
+
+      .toolbox > input[type="range"] {
+        width: 100px;
+      }
+
+      .toolbox select {
+        width: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas" width="800" height="700"></canvas>
+    <div class="toolbox">
+      <button id="decrease">-</button>
+      <span id="size">10</span>
+      <button id="increase">+</button>
+      <input type="color" id="color" title="Brush Color" />
+      <input type="color" id="bg-color" title="Background Color" />
+      <input type="range" id="opacity" min="0.1" max="1" step="0.1" value="1" />
+      <button id="eraser">Eraser</button>
+      <button id="clear">Clear</button>
+      <button id="undo">Undo</button>
+      <button id="redo">Redo</button>
+      <select id="shapes">
+        <option value="circle">Circle</option>
+        <option value="square">Square</option>
+        <option value="line">Line</option>
+        <option value="triangle">Triangle</option>
+      </select>
+      <button id="add-text">Add Text</button>
+      <button id="toggle-grid">Toggle Grid</button>
+      <button id="save">Save</button>
+      <button id="resize-canvas">Resize Canvas</button>
+    </div>
+
+    <script>
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+
+      const increaseButton = document.getElementById("increase");
+      const decreaseButton = document.getElementById("decrease");
+      const sizeElement = document.getElementById("size");
+      const colorElement = document.getElementById("color");
+      const bgColorElement = document.getElementById("bg-color");
+      const clearElement = document.getElementById("clear");
+      const undoButton = document.getElementById("undo");
+      const redoButton = document.getElementById("redo");
+      const eraserButton = document.getElementById("eraser");
+      const opacityElement = document.getElementById("opacity");
+      const shapeSelect = document.getElementById("shapes");
+      const saveButton = document.getElementById("save");
+      const resizeButton = document.getElementById("resize-canvas");
+      const addTextButton = document.getElementById("add-text");
+      const toggleGridButton = document.getElementById("toggle-grid");
+
+      let size = 10;
+      let color = "black";
+      let bgColor = "#ffffff";
+      let opacity = 1;
+      let isPressed = false;
+      let x, y;
+      let currentShape = "circle";
+      let isEraser = false;
+      let showGrid = false;
+      let textColor = "black";
+      let textFont = "30px Roboto";
+
+      const actions = [];
+      let undoneActions = [];
+
+      const saveAction = () => {
+        actions.push(canvas.toDataURL());
+        undoneActions = [];
+      };
+
+      const undoAction = () => {
+        if (actions.length > 0) {
+          undoneActions.push(actions.pop());
+          const image = new Image();
+          image.src = actions[actions.length - 1] || null;
+          image.onload = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(image, 0, 0);
+          };
+        }
+      };
+
+      const redoAction = () => {
+        if (undoneActions.length > 0) {
+          const image = new Image();
+          image.src = undoneActions.pop();
+          image.onload = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(image, 0, 0);
+          };
+          actions.push(image.src);
+        }
+      };
+
+      const drawShape = (x1, y1, x2, y2) => {
+        if (isEraser) {
+          ctx.clearRect(x2 - size, y2 - size, size * 2, size * 2);
+        } else {
+          ctx.globalAlpha = opacity;
+          ctx.fillStyle = color;
+          if (currentShape === "circle") {
+            ctx.beginPath();
+            ctx.arc(x2, y2, size, 0, Math.PI * 2);
+            ctx.fill();
+          } else if (currentShape === "square") {
+            ctx.fillRect(x2 - size, y2 - size, size * 2, size * 2);
+          } else if (currentShape === "line") {
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = size * 2;
+            ctx.stroke();
+          } else if (currentShape === "triangle") {
+            ctx.beginPath();
+            ctx.moveTo(x2, y2 - size);
+            ctx.lineTo(x2 - size, y2 + size);
+            ctx.lineTo(x2 + size, y2 + size);
+            ctx.closePath();
+            ctx.fill();
+          }
+        }
+      };
+
+      const drawGrid = () => {
+        const step = 50;
+        ctx.strokeStyle = "lightgray";
+        ctx.lineWidth = 0.5;
+        for (let i = 0; i < canvas.width; i += step) {
+          ctx.beginPath();
+          ctx.moveTo(i, 0);
+          ctx.lineTo(i, canvas.height);
+          ctx.stroke();
+        }
+        for (let j = 0; j < canvas.height; j += step) {
+          ctx.beginPath();
+          ctx.moveTo(0, j);
+          ctx.lineTo(canvas.width, j);
+          ctx.stroke();
+        }
+      };
+
+      const toggleGrid = () => {
+        showGrid = !showGrid;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (actions.length > 0) {
+          const image = new Image();
+          image.src = actions[actions.length - 1];
+          image.onload = () => ctx.drawImage(image, 0, 0);
+        }
+        if (showGrid) drawGrid();
+      };
+
+      const setCanvasBackground = (color) => {
+        ctx.fillStyle = color;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        saveAction();
+      };
+
+      canvas.addEventListener("mousedown", (e) => {
+        isPressed = true;
+        x = e.offsetX;
+        y = e.offsetY;
+        saveAction();
+      });
+
+      canvas.addEventListener("mouseup", () => {
+        isPressed = false;
+        x = undefined;
+        y = undefined;
+      });
+
+      canvas.addEventListener("mousemove", (e) => {
+        if (isPressed) {
+          drawShape(x, y, e.offsetX, e.offsetY);
+          x = e.offsetX;
+          y = e.offsetY;
+        }
+      });
+
+      increaseButton.addEventListener("click", () => {
+        size = Math.min(size + 5, 50);
+        sizeElement.innerText = size;
+      });
+
+      decreaseButton.addEventListener("click", () => {
+        size = Math.max(size - 5, 5);
+        sizeElement.innerText = size;
+      });
+
+      colorElement.addEventListener("change", (e) => {
+        color = e.target.value;
+        isEraser = false;
+      });
+
+      bgColorElement.addEventListener("change", (e) => {
+        bgColor = e.target.value;
+        setCanvasBackground(bgColor);
+      });
+
+      opacityElement.addEventListener("input", (e) => (opacity = e.target.value));
+
+      eraserButton.addEventListener("click", () => (isEraser = true));
+
+      clearElement.addEventListener("click", () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        setCanvasBackground(bgColor);
+      });
+
+      undoButton.addEventListener("click", undoAction);
+      redoButton.addEventListener("click", redoAction);
+
+      shapeSelect.addEventListener("change", (e) => (currentShape = e.target.value));
+
+      saveButton.addEventListener("click", () => {
+        const link = document.createElement("a");
+        link.href = canvas.toDataURL("image/png");
+        link.download = "drawing.png";
+        link.click();
+      });
+
+      resizeButton.addEventListener("click", () => {
+        const width = prompt("Enter canvas width:", canvas.width);
+        const height = prompt("Enter canvas height:", canvas.height);
+        if (width && height) {
+          canvas.width = width;
+          canvas.height = height;
+          setCanvasBackground(bgColor);
+        }
+      });
+
+      toggleGridButton.addEventListener("click", toggleGrid);
+
+      addTextButton.addEventListener("click", () => {
+        const text = prompt("Enter the text:");
+        if (text) {
+          const fontSize = prompt("Enter font size (e.g., 30px):", "30px");
+          const textColor = prompt("Enter text color (e.g., 'black'):", color) || color;
+          const x = parseInt(prompt("Enter X coordinate:", canvas.width / 2));
+          const y = parseInt(prompt("Enter Y coordinate:", canvas.height / 2));
+          ctx.font = fontSize + " Roboto";
+          ctx.fillStyle = textColor;
+          ctx.fillText(text, x, y);
+          saveAction();
+        }
+      });
+
+      setCanvasBackground(bgColor);
+    </script>
+  </body>
+</html>

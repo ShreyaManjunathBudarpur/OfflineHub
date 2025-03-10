@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cool Stopwatch</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .stopwatch {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            animation: pop 1.5s ease-out;
+        }
+
+        @keyframes pop {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .time {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(45deg, #6a11cb, #2575fc);
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .button:active {
+            transform: translateY(2px);
+        }
+
+        .button.reset {
+            background: linear-gradient(45deg, #f12711, #f5af19);
+        }
+
+        .glow {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.6), transparent);
+            filter: blur(50px);
+            animation: glowMove 5s infinite;
+        }
+
+        @keyframes glowMove {
+            0%, 100% {
+                transform: translate(0, 0);
+            }
+            50% {
+                transform: translate(50px, -50px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="glow" style="top: 10%; left: 10%;"></div>
+    <div class="glow" style="bottom: 20%; right: 15%;"></div>
+    <div class="stopwatch">
+        <div class="time" id="time-display">00:00:00</div>
+        <div class="buttons">
+            <button class="button start" id="start-btn">Start</button>
+            <button class="button stop" id="stop-btn">Stop</button>
+            <button class="button reset" id="reset-btn">Reset</button>
+        </div>
+    </div>
+
+    <script>
+        const timeDisplay = document.getElementById('time-display');
+        const startBtn = document.getElementById('start-btn');
+        const stopBtn = document.getElementById('stop-btn');
+        const resetBtn = document.getElementById('reset-btn');
+
+        let timer = null;
+        let elapsedTime = 0;
+
+        function updateTime() {
+            const hours = Math.floor(elapsedTime / 3600).toString().padStart(2, '0');
+            const minutes = Math.floor((elapsedTime % 3600) / 60).toString().padStart(2, '0');
+            const seconds = (elapsedTime % 60).toString().padStart(2, '0');
+            timeDisplay.textContent = `${hours}:${minutes}:${seconds}`;
+        }
+
+        startBtn.addEventListener('click', () => {
+            if (timer) return; // Prevent multiple timers
+            timer = setInterval(() => {
+                elapsedTime++;
+                updateTime();
+            }, 1000);
+        });
+
+        stopBtn.addEventListener('click', () => {
+            clearInterval(timer);
+            timer = null;
+        });
+
+        resetBtn.addEventListener('click', () => {
+            clearInterval(timer);
+            timer = null;
+            elapsedTime = 0;
+            updateTime();
+        });
+    </script>
+</body>
+</html>

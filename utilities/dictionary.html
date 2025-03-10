@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Offline Dictionary</title>
+    <style>
+         body {
+            font-family: sans-serif;
+            background-color: #f0f0f0;
+            background-image: url('/dictionary.jpg'); /* Imgur image */
+            background-size: cover; 
+            background-position: center;
+         }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px; 
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        .word-input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box; 
+        }
+
+        button {
+    background-color: #3276f4; /* Button color */
+    color: #fff; /* Text color */
+    border: none; /* Remove border */
+    padding: 12px 30px; /* Horizontal padding increased for a more "horizontal" look */
+    border-radius: 30px; /* More rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+    font-size: 16px; /* Font size */
+    display: block; /* Make the button a block element */
+    margin: 0 auto; /* Center the button horizontally */
+    text-align: center; /* Ensure the text is centered */
+    width: auto; /* Button width is auto based on padding */
+}
+
+button:hover {
+    background-color: #4e1db6; /* Darker shade on hover */
+}
+
+
+        button:hover {
+            background-color: #3f1ff1; 
+        }
+
+        .results {
+            margin-top: 20px;
+        }
+
+        .result-item {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Offline Dictionary</h1>
+        <input type="text" id="wordInput" class="word-input" placeholder="Enter a word">
+        <button onclick="searchWord()">Search</button>
+
+        <div class="results">
+            <div class="result-item">
+                <span id="word">Word:</span> <span id="word-value"></span>
+            </div>
+            <div class="result-item">
+                <span id="definition">Definition:</span> <span id="definition-value"></span>
+            </div>
+            <div class="result-item">
+                <span id="synonyms">Synonyms:</span> <span id="synonyms-value"></span>
+            </div>
+        </div>
+
+        <div>
+            <h3>Word of the Day</h3>
+            <p>
+                <span id="wordOfTheDay">Failed to load dictionary</span> 
+                <span id="wordOfTheDayMeaning"></span> 
+            </p>
+        </div>
+    </div>
+
+    <script>
+        let dictionary = {}; 
+
+        fetch('merged.json')
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(entry => {
+                    dictionary[entry.word.toLowerCase()] = { 
+                        definition: entry.definition, 
+                        synonyms: entry.synonyms 
+                    };
+                });
+
+                // Select a random word
+                const keys = Object.keys(dictionary);
+                const randomIndex = Math.floor(Math.random() * keys.length);
+                const randomWord = keys[randomIndex];
+
+                // Display the word of the day and its meaning
+                document.getElementById('wordOfTheDay').textContent = `Word: ${randomWord}`;
+                document.getElementById('wordOfTheDayMeaning').textContent = ` - Meaning: ${dictionary[randomWord].definition}`;
+
+            })
+            .catch(error => {
+                console.error('Error loading dictionary:', error);
+                document.getElementById('wordOfTheDay').textContent = "Failed to load dictionary. Please check console for errors.";
+            });
+
+        function searchWord() {
+            const word = document.getElementById('wordInput').value.toLowerCase();
+            const wordData = dictionary[word];
+
+            if (wordData) {
+                document.getElementById('word-value').textContent = word;
+                document.getElementById('definition-value').textContent = wordData.definition;
+                document.getElementById('synonyms-value').textContent = wordData.synonyms.join(', ');
+            } else {
+                document.getElementById('word-value').textContent = word;
+                document.getElementById('definition-value').textContent = "Word not found in the dictionary.";
+                document.getElementById('synonyms-value').textContent = "";
+            }
+        }
+    </script>
+</body>
+</html>

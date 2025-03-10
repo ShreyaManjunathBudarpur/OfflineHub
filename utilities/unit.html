@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Converter</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #6dd5ed, #63d7f4); /* Gradient background */
+            color: #333;
+        }
+
+        #unit-converter {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            text-align: center;
+            width: 400px;
+            backdrop-filter: blur(10px);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #222;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        select, input[type="number"] {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+            outline: none;
+            font-size: 14px;
+            transition: box-shadow 0.3s;
+        }
+
+        select:focus, input[type="number"]:focus {
+            box-shadow: 0 0 5px #2193b0;
+            border-color: #2193b0;
+        }
+
+        button {
+            background: linear-gradient(90deg, #36d1dc, #5b86e5);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        #conversion-result {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 18px;
+            color: #444;
+        }
+
+        #conversion-history {
+            margin-top: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        .history-item {
+            margin-bottom: 5px;
+            padding: 8px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Dark Mode */
+        body.dark-mode {
+            background: linear-gradient(135deg, #232526, #414345);
+            color: #eee;
+        }
+
+        .dark-mode #unit-converter {
+            background: rgba(50, 50, 50, 0.9);
+            color: #ddd;
+        }
+
+        .dark-mode select, .dark-mode input[type="number"] {
+            border-color: #444;
+            background: #555;
+            color: #eee;
+        }
+
+        .dark-mode select:focus, .dark-mode input[type="number"]:focus {
+            box-shadow: 0 0 5px #5b86e5;
+            border-color: #5b86e5;
+        }
+
+        .dark-mode #conversion-history {
+            background: #333;
+            border-color: #555;
+        }
+
+        .dark-mode .history-item {
+            background: #444;
+            border-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <section id="unit-converter">
+        <h2>Unit Converter</h2>
+
+        <div>
+            <select id="unit-from">
+                <optgroup label="Length">
+                    <option value="meters">Meters</option>
+                    <option value="kilometers">Kilometers</option>
+                    <option value="miles">Miles</option>
+                    <option value="feet">Feet</option>
+                    <option value="centimeters">Centimeters</option>
+                </optgroup>
+                <optgroup label="Weight">
+                    <option value="kilograms">Kilograms</option>
+                    <option value="grams">Grams</option>
+                    <option value="pounds">Pounds</option>
+                    <option value="ounces">Ounces</option>
+                </optgroup>
+                <optgroup label="Temperature">
+                    <option value="celsius">Celsius</option>
+                    <option value="fahrenheit">Fahrenheit</option>
+                    <option value="kelvin">Kelvin</option>
+                </optgroup>
+                <optgroup label="Volume">
+                    <option value="liters">Liters</option>
+                    <option value="milliliters">Milliliters</option>
+                    <option value="gallons">Gallons</option>
+                    <option value="quarts">Quarts</option>
+                </optgroup>
+            </select>
+            <select id="unit-to">
+                <optgroup label="Length">
+                    <option value="meters">Meters</option>
+                    <option value="kilometers">Kilometers</option>
+                    <option value="miles">Miles</option>
+                    <option value="feet">Feet</option>
+                    <option value="centimeters">Centimeters</option>
+                </optgroup>
+                <optgroup label="Weight">
+                    <option value="kilograms">Kilograms</option>
+                    <option value="grams">Grams</option>
+                    <option value="pounds">Pounds</option>
+                    <option value="ounces">Ounces</option>
+                </optgroup>
+                <optgroup label="Temperature">
+                    <option value="celsius">Celsius</option>
+                    <option value="fahrenheit">Fahrenheit</option>
+                    <option value="kelvin">Kelvin</option>
+                </optgroup>
+                <optgroup label="Volume">
+                    <option value="liters">Liters</option>
+                    <option value="milliliters">Milliliters</option>
+                    <option value="gallons">Gallons</option>
+                    <option value="quarts">Quarts</option>
+                </optgroup>
+            </select>
+        </div>
+
+        <input type="number" id="unit-input" placeholder="Enter value">
+
+        <button onclick="convertUnits()">Convert</button>
+
+        <p id="conversion-result"></p>
+
+        <h3>Conversion History</h3>
+        <div id="conversion-history"></div>
+
+        <label for="dark-mode-toggle">Dark Mode:</label>
+        <input type="checkbox" id="dark-mode-toggle">
+    </section>
+
+    <script>
+       const conversionFactors = {
+            'length': {
+                'meters': {
+                    'kilometers': 0.001,
+                    'miles': 0.000621371,
+                    'feet': 3.28084,
+                    'centimeters': 100
+                },
+                'kilometers': {
+                    'meters': 1000,
+                    'miles': 0.621371,
+                    'feet': 3280.84,
+                    'centimeters': 100000
+                },
+                'miles': {
+                    'meters': 1609.34,
+                    'kilometers': 1.60934,
+                    'feet': 5280,
+                    'centimeters': 160934
+                },
+                'feet': {
+                    'meters': 0.3048,
+                    'kilometers': 0.0003048,
+                    'miles': 0.000189394,
+                    'centimeters': 30.48
+                },
+                'centimeters': {
+                    'meters': 0.01,
+                    'kilometers': 0.00001,
+                    'miles': 0.00000621371,
+                    'feet': 0.0328084
+                }
+            },
+            'weight': {
+                'kilograms': {
+                    'grams': 1000,
+                    'pounds': 2.20462,
+                    'ounces': 35.274
+                },
+                'grams': {
+                    'kilograms': 0.001,
+                    'pounds': 0.00220462,
+                    'ounces': 0.035274
+                },
+                'pounds': {
+                    'kilograms': 0.453592,
+                    'grams': 453.592,
+                    'ounces': 16
+                },
+                'ounces': {
+                    'kilograms': 0.0283495,
+                    'grams': 28.3495,
+                    'pounds': 0.0625
+                }
+            },
+            'temperature': {
+                'celsius': {
+                    'fahrenheit': (value) => (value * 9/5) + 32,
+                    'kelvin': (value) => value + 273.15
+                },
+                'fahrenheit': {
+                    'celsius': (value) => (value - 32) * 5/9,
+                    'kelvin': (value) => ((value - 32) * 5/9) + 273.15
+                },
+                'kelvin': {
+                    'celsius': (value) => value - 273.15,
+                    'fahrenheit': (value) => ((value - 273.15) * 9/5) + 32
+                }
+            },
+            'volume': {
+                'liters': {
+                    'milliliters': 1000,
+                    'gallons': 0.264172,
+                    'quarts': 1.05669
+                },
+                'milliliters': {
+                    'liters': 0.001,
+                    'gallons': 0.000264172,
+                    'quarts': 0.00105669
+                },
+                'gallons': {
+                    'liters': 3.78541,
+                    'milliliters': 3785.41,
+                    'quarts': 4
+                },
+                'quarts': {
+                    'liters': 0.946353,
+                    'milliliters': 946.353,
+                    'gallons': 0.25
+                }
+            }
+        };
+
+        function convertUnits() {
+            const unitFrom = document.getElementById('unit-from').value;
+            const unitTo = document.getElementById('unit-to').value;
+            const inputValue = parseFloat(document.getElementById('unit-input').value);
+
+            if (isNaN(inputValue)) {
+                document.getElementById('conversion-result').textContent = "Please enter a valid number.";
+                return;
+            }
+
+            const category = getCategory(unitFrom);
+
+            if (category) {
+                const factor = conversionFactors[category][unitFrom][unitTo];
+
+                let result;
+
+                if (category === 'temperature') {
+                    result = conversionFactors[category][unitFrom][unitTo](inputValue);
+                } else {
+                    result = inputValue * factor;
+                }
+
+                document.getElementById('conversion-result').textContent = 
+                    `${inputValue} ${unitFrom} is ${result.toFixed(2)} ${unitTo}`;
+
+                // Save to history
+                addToHistory(inputValue, unitFrom, result, unitTo);
+            }
+        }
+
+        function getCategory(unit) {
+            if (['meters', 'kilometers', 'miles', 'feet', 'centimeters'].includes(unit)) {
+                return 'length';
+            }
+            if (['kilograms', 'grams', 'pounds', 'ounces'].includes(unit)) {
+                return 'weight';
+            }
+            if (['celsius', 'fahrenheit', 'kelvin'].includes(unit)) {
+                return 'temperature';
+            }
+            if (['liters', 'milliliters', 'gallons', 'quarts'].includes(unit)) {
+                return 'volume';
+            }
+            return null;
+        }
+
+        function addToHistory(inputValue, unitFrom, result, unitTo) {
+            const historyContainer = document.getElementById('conversion-history');
+            const historyItem = document.createElement('div');
+            historyItem.classList.add('history-item');
+            historyItem.textContent = `${inputValue} ${unitFrom} → ${result.toFixed(2)} ${unitTo}`;
+            historyContainer.appendChild(historyItem);
+        }
+
+        document.getElementById('dark-mode-toggle').addEventListener('change', (event) => {
+            if (event.target.checked) {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+        });
+    </script>
+</body>
+</html>

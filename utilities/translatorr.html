@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline Language Translator</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #6e8efb, #a777e3);
+      margin: 0;
+      padding: 20px;
+      color: #fff;
+    }
+
+    .translator-container {
+      max-width: 600px;
+      margin: auto;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    textarea, select, button {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    textarea {
+      height: 100px;
+      resize: none;
+    }
+
+    button {
+      background: #00c6ff;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #0072ff;
+    }
+
+    #output-container {
+      margin-top: 20px;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    #output-text {
+      font-weight: bold;
+      font-size: 18px;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="translator-container">
+    <h1>Offline Language Translator</h1>
+    <div class="language-selector">
+      <select id="source-language">
+        <option value="en">English</option>
+        <option value="es">Spanish</option>
+        <option value="fr">French</option>
+        <option value="de">German</option>
+        <option value="it">Italian</option>
+        <option value="hi">Hindi</option>
+        <option value="ta">Tamil</option>
+        <option value="kn">Kannada</option>
+        <option value="te">Telugu</option>
+      </select>
+      <button id="swap-btn">↔</button>
+      <select id="target-language">
+        <option value="es">Spanish</option>
+        <option value="en">English</option>
+        <option value="fr">French</option>
+        <option value="de">German</option>
+        <option value="it">Italian</option>
+        <option value="hi">Hindi</option>
+        <option value="ta">Tamil</option>
+        <option value="kn">Kannada</option>
+        <option value="te">Telugu</option>
+      </select>
+    </div>
+    <textarea id="input-text" placeholder="Enter text to translate"></textarea>
+    <button id="translate-btn">Translate</button>
+    <div id="output-container">
+      <h2>Translated Text:</h2>
+      <p id="output-text"></p>
+    </div>
+  </div>
+  <script>
+    const sourceLangSelect = document.getElementById("source-language");
+    const targetLangSelect = document.getElementById("target-language");
+    const inputText = document.getElementById("input-text");
+    const translateBtn = document.getElementById("translate-btn");
+    const outputText = document.getElementById("output-text");
+    const swapBtn = document.getElementById("swap-btn");
+
+    let dictionaries = {};
+
+    // Load dictionaries
+    fetch('dictionaries.json')
+      .then(response => response.json())
+      .then(data => {
+        dictionaries = data;
+      });
+
+    // Translation logic
+    translateBtn.addEventListener("click", () => {
+      const sourceLang = sourceLangSelect.value;
+      const targetLang = targetLangSelect.value;
+      const text = inputText.value.trim();
+
+      if (!text) {
+        outputText.textContent = "Please enter text to translate.";
+        return;
+      }
+
+      const dictionary = dictionaries[sourceLang]?.[targetLang];
+      if (dictionary) {
+        const translatedText = dictionary[text.toLowerCase()] || "Translation not found.";
+        outputText.textContent = translatedText;
+      } else {
+        outputText.textContent = "Language pair not supported.";
+      }
+    });
+
+    // Swap languages
+    swapBtn.addEventListener("click", () => {
+      const temp = sourceLangSelect.value;
+      sourceLangSelect.value = targetLangSelect.value;
+      targetLangSelect.value = temp;
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Name Picker</title>
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ff7eb3, #ff758c, #fd297b);
+            background-size: 200% 200%;
+            animation: gradientAnimation 6s infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: white;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .container h1 {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            resize: none;
+            font-size: 1rem;
+            outline: none;
+            color: #333;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        #pick-name-btn {
+            background-color: #e91e63;
+        }
+
+        #pick-name-btn:hover {
+            background-color: #d81b60;
+        }
+
+        #reset-btn {
+            background-color: #607d8b;
+        }
+
+        #reset-btn:hover {
+            background-color: #546e7a;
+        }
+
+        #result {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: none;
+        }
+
+        #result.text-red {
+            color: #e57373;
+        }
+
+        #result.text-green {
+            color: #81c784;
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎉 Random Name Picker 🎉</h1>
+        <textarea id="name-input" rows="5" placeholder="Enter names separated by commas or new lines..."></textarea>
+        <button id="pick-name-btn">Pick Random Name</button>
+        <button id="reset-btn">Reset</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        // Selecting elements
+        const nameInput = document.getElementById('name-input');
+        const pickNameBtn = document.getElementById('pick-name-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const result = document.getElementById('result');
+
+        // Function to pick a random name
+        pickNameBtn.addEventListener('click', () => {
+            const names = nameInput.value.split(/[,\n]+/).map(name => name.trim()).filter(name => name);
+
+            if (names.length === 0) {
+                result.textContent = 'Please enter some names!';
+                result.className = 'text-red fade-in';
+                result.style.display = 'block';
+                return;
+            }
+
+            const randomIndex = Math.floor(Math.random() * names.length);
+            const randomName = names[randomIndex];
+
+            result.textContent = `🎉 Random Name: ${randomName} 🎉`;
+            result.className = 'text-green fade-in';
+            result.style.display = 'block';
+        });
+
+        // Function to reset the application
+        resetBtn.addEventListener('click', () => {
+            nameInput.value = '';
+            result.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
