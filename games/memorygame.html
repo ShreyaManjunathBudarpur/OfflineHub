@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Memory Game</title>
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            background: linear-gradient(45deg, #ff7e5f, #feb47b);
+            color: white;
+        }
+
+        h1, h2 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        button {
+            background-color: #ff6f61;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1rem;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #e85a47;
+        }
+
+        /* Menu and Leaderboard */
+        #menu, #leaderboard {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        #leaderboard ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #leaderboard li {
+            font-size: 1.2rem;
+            margin: 0.5rem 0;
+        }
+
+        /* Game Board */
+        .game-container {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #game-board {
+            display: grid;
+            grid-template-columns: repeat(4, 150px);
+            gap: 15px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .card {
+            width: 150px;
+            height: 150px;
+            position: relative;
+            perspective: 1000px;
+            cursor: pointer;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card-inner {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+        }
+
+        .card-front {
+            background-color: #fff;
+            color: #333;
+        }
+
+        .card-back {
+            background-color: #2e2e2e;
+            transform: rotateY(180deg);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Timer and Moves */
+        #info {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .controls button {
+            padding: 10px 20px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="menu">
+        <h1>Memory Game</h1>
+        <button id="start-game">Start Game</button>
+        <button id="leaderboard-btn">Leaderboard</button>
+    </div>
+
+    <div class="game-container hidden" id="game-container">
+        <div id="info">
+            <span>Time: <span id="timer">0</span>s</span> | 
+            <span>Moves: <span id="moves">0</span></span>
+        </div>
+        <div id="game-board"></div>
+        <div class="controls">
+            <button id="restart-btn">Restart</button>
+            <button id="hint-btn">Hint</button>
+        </div>
+    </div>
+
+    <div id="leaderboard" class="hidden">
+        <h2>Leaderboard</h2>
+        <ul id="leaderboard-list"></ul>
+        <button id="back-to-menu">Back to Menu</button>
+    </div>
+
+    <script>
+        const menu = document.getElementById('menu');
+        const gameContainer = document.getElementById('game-container');
+        const leaderboard = document.getElementById('leaderboard');
+        const leaderboardList = document.getElementById('leaderboard-list');
+        const gameBoard = document.getElementById('game-board');
+        const timerDisplay = document.getElementById('timer');
+        const movesDisplay = document.getElementById('moves');
+        const restartBtn = document.getElementById('restart-btn');
+        const hintBtn = document.getElementById('hint-btn');
+
+        const symbols = ['🍎', '🍊', '🍓', '🍇', '🍉', '🍌', '🍒', '🥝', '🌟', '🎵'];
+        let cards, firstCard, secondCard, matchedPairs, moves, timer, timerInterval;
+        const leaderboardData = [];
+
+        document.getElementById('start-game').addEventListener('click', () => {
+            menu.classList.add('hidden');
+            gameContainer.classList.remove('hidden');
+            startGame();
+        });
+
+        document.getElementById('leaderboard-btn').addEventListener('click', () => {
+            menu.classList.add('hidden');
+            leaderboard.classList.remove('hidden');
+            updateLeaderboard();
+        });
+
+        document.getElementById('back-to-menu').addEventListener('click', () => {
+            leaderboard.classList.add('hidden');
+            menu.classList.remove('hidden');
+        });
+
+        restartBtn.addEventListener('click', startGame);
+
+        hintBtn.addEventListener('click', giveHint);
+
+        function startGame() {
+            gameBoard.innerHTML = '';
+            cards = shuffle([...symbols, ...symbols]);
+            moves = 0;
+            matchedPairs = 0;
+            timer = 0;
+            timerDisplay.textContent = timer;
+            movesDisplay.textContent = moves;
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timer++;
+                timerDisplay.textContent = timer;
+            }, 1000);
+
+            cards.forEach(symbol => {
+                const card = createCard(symbol);
+                gameBoard.appendChild(card);
+            });
+        }
+
+        function createCard(symbol) {
+            const card = document.createElement('div');
+            card.classList.add('card');
+            card.innerHTML = `
+                <div class="card-inner">
+                    <div class="card-front">${symbol}</div>
+                    <div class="card-back"></div>
+                </div>`;
+            card.addEventListener('click', () => flipCard(card));
+            return card;
+        }
+
+        function flipCard(card) {
+            if (card.classList.contains('flipped') || secondCard) return;
+            card.classList.add('flipped');
+            if (!firstCard) {
+                firstCard = card;
+            } else {
+                secondCard = card;
+                moves++;
+                movesDisplay.textContent = moves;
+                checkMatch();
+            }
+        }
+
+        function checkMatch() {
+            if (firstCard.innerHTML === secondCard.innerHTML) {
+                matchedPairs++;
+                resetSelection();
+                if (matchedPairs === symbols.length) {
+                    clearInterval(timerInterval);
+                    alert(`You won in ${timer} seconds with ${moves} moves!`);
+                    saveToLeaderboard(timer, moves);
+                }
+            } else {
+                setTimeout(() => {
+                    firstCard.classList.remove('flipped');
+                    secondCard.classList.remove('flipped');
+                    resetSelection();
+                }, 1000);
+            }
+        }
+
+        function resetSelection() {
+            firstCard = null;
+            secondCard = null;
+        }
+
+        function shuffle(array) {
+            return array.sort(() => Math.random() - 0.5);
+        }
+
+        function saveToLeaderboard(time, moves) {
+            leaderboardData.push({ time, moves });
+            leaderboardData.sort((a, b) => a.time - b.time || a.moves - b.moves);
+        }
+
+        function updateLeaderboard() {
+            leaderboardList.innerHTML = leaderboardData.map(
+                (entry, index) => `<li>${index + 1}. Time: ${entry.time}s | Moves: ${entry.moves}</li>`
+            ).join('');
+        }
+
+        function giveHint() {
+            alert('This is a hint! Try remembering pairs!');
+        }
+    </script>
+</body>
+</html>

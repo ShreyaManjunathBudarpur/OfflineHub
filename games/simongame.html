@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simon Game</title>
+  <!-- CSS -->
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: rgb(206, 201, 201);
+      font-family: 'Arial', sans-serif;
+    }
+
+    #controls {
+      margin: 20px 0 20px 0;
+    }
+
+    #strict-mode {
+      margin-right: 20px;
+    }
+
+    #simon-board {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      max-width: 300px;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .simon-btn {
+      width: 100px;
+      height: 100px;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: bold;
+      background-color: #3498db;
+      color: #fff;
+      transition: background-color 0.3s;
+    }
+
+    .top-left {
+      background-color: darkgreen;
+    }
+
+    .top-right {
+      background-color: darkred;
+    }
+
+    .bottom-left {
+      background-color: goldenrod;
+    }
+
+    .bottom-right {
+      background-color: darkblue;
+    }
+
+    .level-count {
+      color: red;
+      background-color: rgb(81, 0, 0);
+      padding: 0.25rem 1rem;
+    }
+
+    #power-btn {
+      font-family: 'Arial', sans-serif;
+      margin-top: 30px;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #2ecc71;
+      color: #fff;
+      border: none;
+      outline: none;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    #power-btn:hover {
+      background-color: #27ae60;
+    }
+
+    #power-btn:disabled {
+      background-color: #484a4b;
+      cursor: not-allowed;
+    }
+
+    .active {
+      opacity: 0.6;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Simon Game</h1>
+  <div id="controls">
+    <label for="strict-mode">Strict Mode</label>
+    <input type="checkbox" id="strict-mode" onchange="toggleStrictMode()">
+  </div>
+
+  <div id="simon-board">
+    <button class="simon-btn top-left" onclick="handleClick(this)" data-color="1" disabled></button>
+    <button class="simon-btn top-right" onclick="handleClick(this)" data-color="2" disabled></button>
+    <button class="simon-btn bottom-left" onclick="handleClick(this)" data-color="3" disabled></button>
+    <button class="simon-btn bottom-right" onclick="handleClick(this)" data-color="4" disabled></button>
+  </div>
+
+  <div id="level">
+    <span>Level: <span class="level-count">-</span></span>
+  </div>
+  <button id="power-btn" onclick="togglePower()">Start</button>
+
+  <!-- JavaScript -->
+  <script>
+    let strictMode = false;
+    let powerOn = false;
+    const sequence = [];
+    let userSequence = [];
+    let level = 1;
+
+    const levelCount = document.querySelector('.level-count');
+
+    // Start the game
+    function startGame() {
+      sequence.length = 0;
+      userSequence.length = 0;
+      level = 1;
+      levelCount.textContent = level;
+      nextRound();
+      document.getElementById("power-btn").disabled = false;
+    }
+
+    // Proceed to the next round by adding a new color to the sequence
+    function nextRound() {
+      addToSequence();
+      playSequence();
+    }
+
+    // Add a random color to the sequence
+    function addToSequence() {
+      const randomColor = Math.floor(Math.random() * 4) + 1;
+      sequence.push(randomColor);
+    }
+
+    // Play the sequence by highlighting buttons in order
+    function playSequence() {
+      let i = 0;
+      const intervalId = setInterval(() => {
+        highlightButton(sequence[i]);
+        i++;
+        if (i >= sequence.length) {
+          clearInterval(intervalId);
+          enableButtons();
+        }
+      }, 1000);
+    }
+
+    // Handle user click on a button
+    function handleClick(button) {
+      if (powerOn) {
+        const userColor = button.getAttribute("data-color");
+        userSequence.push(Number(userColor));
+        highlightButton(userColor);
+        if (!checkSequence()) {
+          if (strictMode) {
+            alert(`Game over! Press Start to retry from level 1.\nFINAL SCORE: ${level}`);
+            togglePower();
+            startGame();
+          } else {
+            alert(`Wrong sequence! Try again.\nFINAL SCORE: ${level}`);
+            userSequence = [];
+            playSequence();
+          }
+        } else if (userSequence.length === sequence.length) {
+          userSequence = [];
+          level++;
+          levelCount.textContent = level;
+          if (level <= 20) {
+            setTimeout(() => nextRound(), 1000);
+          } else {
+            alert("Congratulations! You won!");
+            startGame();
+          }
+        }
+      }
+    }
+
+    // Check if the user sequence matches the game sequence
+    function checkSequence() {
+      for (let i = 0; i < userSequence.length; i++) {
+        if (userSequence[i] !== sequence[i]) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    // Highlight a button for a short duration
+    function highlightButton(color) {
+      const button = document.querySelector(`[data-color="${color}"]`);
+      button.classList.add('active');
+      setTimeout(() => {
+        button.classList.remove('active');
+      }, 300);
+    }
+
+    // Enable all the Simon buttons
+    function enableButtons() {
+      const buttons = document.querySelectorAll('.simon-btn');
+      buttons.forEach(button => button.removeAttribute('disabled'));
+    }
+
+    // Disable all the Simon buttons
+    function disableButtons() {
+      const buttons = document.querySelectorAll('.simon-btn');
+      buttons.forEach(button => button.setAttribute('disabled', 'true'));
+    }
+
+    // Toggle the strict mode on/off
+    function toggleStrictMode() {
+      strictMode = !strictMode;
+    }
+
+    // Toggle the power button, starting or stopping the game
+    function togglePower() {
+      powerOn = !powerOn;
+      if (powerOn) {
+        startGame();
+        enableButtons();
+      } else {
+        userSequence = [];
+        disableButtons();
+      }
+    }
+  </script>
+</body>
+
+</html>

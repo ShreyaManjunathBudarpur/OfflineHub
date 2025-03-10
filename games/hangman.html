@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hangman Game</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f3e6ff, #ffccf2);
+            color: #333;
+        }
+        h1 {
+            margin-top: 20px;
+            font-size: 3rem;
+            color: #5a189a;
+            text-shadow: 2px 2px 4px #d0a9ff;
+        }
+        .word {
+            font-size: 2.5rem;
+            letter-spacing: 0.6rem;
+            margin: 20px 0;
+            font-weight: bold;
+            color: #240046;
+            text-shadow: 2px 2px 4px #e0bbff;
+        }
+        .message {
+            font-size: 1.5rem;
+            color: #e63946;
+            margin-top: 15px;
+        }
+        .letters {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px auto;
+            max-width: 90%;
+        }
+        .letter {
+            width: 50px;
+            height: 50px;
+            margin: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            border: 2px solid #6a0572;
+            cursor: pointer;
+            font-size: 1.5rem;
+            background-color: #ffccf2;
+            color: #240046;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .letter:hover {
+            background-color: #ff8de4;
+            transform: scale(1.1);
+        }
+        .letter.disabled {
+            pointer-events: none;
+            background-color: #d4a5d4;
+            color: #6a0572;
+            box-shadow: none;
+        }
+        .hangman {
+            margin: 20px auto;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #9d4edd;
+        }
+        .hint {
+            margin: 15px auto;
+            font-size: 1.5rem;
+            color: #5a189a;
+            font-style: italic;
+        }
+        .play-again {
+            margin-top: 25px;
+            padding: 10px 20px;
+            font-size: 1.5rem;
+            color: #fff;
+            background-color: #6a0572;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .play-again:hover {
+            background-color: #9d4edd;
+            transform: scale(1.1);
+        }
+        .score {
+            margin-top: 15px;
+            font-size: 1.5rem;
+            color: #1d3557;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hangman Game</h1>
+    <p class="message"></p>
+    <div class="hint" id="hint">Hint: ???</div>
+    <div class="word" id="word">_ _ _ _ </div>
+    <div class="hangman" id="hangman">Lives: 6</div>
+    <div class="letters" id="letters"></div>
+    <div class="score" id="score">Score: 0</div>
+    <button class="play-again" id="play-again" style="display: none;">Play Again</button>
+    <script>
+        const wordsWithHints = [
+            { word: "javascript", hint: "A popular programming language." },
+            { word: "programming", hint: "What developers do to create software." },
+            { word: "hangman", hint: "The name of this game." },
+            { word: "developer", hint: "A person who writes code." },
+            { word: "browser", hint: "Software used to access the internet." },
+            { word: "internet", hint: "A global network connecting millions of devices." }
+        ];
+        const maxLives = 6;
+        let selectedWord, guessedWord, lives, score = 0;
+
+        const wordElement = document.getElementById('word');
+        const hangmanElement = document.getElementById('hangman');
+        const lettersElement = document.getElementById('letters');
+        const messageElement = document.querySelector('.message');
+        const hintElement = document.getElementById('hint');
+        const scoreElement = document.getElementById('score');
+        const playAgainButton = document.getElementById('play-again');
+
+        function initGame() {
+            const randomEntry = wordsWithHints[Math.floor(Math.random() * wordsWithHints.length)];
+            selectedWord = randomEntry.word;
+            guessedWord = Array(selectedWord.length).fill('_');
+            lives = maxLives;
+
+            wordElement.textContent = guessedWord.join(' ');
+            hangmanElement.textContent = `Lives: ${lives}`;
+            messageElement.textContent = '';
+            hintElement.textContent = `Hint: ${randomEntry.hint}`;
+            lettersElement.innerHTML = '';
+            playAgainButton.style.display = 'none';
+
+            const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+            for (let char of alphabet) {
+                const button = document.createElement('div');
+                button.textContent = char;
+                button.classList.add('letter');
+                button.addEventListener('click', () => handleGuess(char, button));
+                lettersElement.appendChild(button);
+            }
+        }
+
+        function handleGuess(char, button) {
+            button.classList.add('disabled');
+            if (selectedWord.includes(char)) {
+                for (let i = 0; i < selectedWord.length; i++) {
+                    if (selectedWord[i] === char) guessedWord[i] = char;
+                }
+                wordElement.textContent = guessedWord.join(' ');
+            } else {
+                lives--;
+                hangmanElement.textContent = `Lives: ${lives}`;
+            }
+            checkGameStatus();
+        }
+
+        function checkGameStatus() {
+            if (!guessedWord.includes('_')) {
+                messageElement.textContent = '🎉 You Won!';
+                score += 10;
+                scoreElement.textContent = `Score: ${score}`;
+                endGame();
+            } else if (lives === 0) {
+                messageElement.textContent = `😢 You Lost! The word was "${selectedWord}".`;
+                score -= 5;
+                scoreElement.textContent = `Score: ${score}`;
+                endGame();
+            }
+        }
+
+        function endGame() {
+            document.querySelectorAll('.letter').forEach(letter => letter.classList.add('disabled'));
+            playAgainButton.style.display = 'block';
+        }
+
+        playAgainButton.addEventListener('click', initGame);
+        initGame();
+    </script>
+</body>
+</html>

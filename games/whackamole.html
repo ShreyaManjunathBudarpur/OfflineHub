@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Whack-a-Mole Game</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #3a1c71, #d76d77, #ffaf7b);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    #game-container {
+      width: 400px;
+      display: none;
+    }
+
+    .menu, .game-over {
+      text-align: center;
+    }
+
+    .menu button, .game-over button {
+      padding: 10px 20px;
+      font-size: 1.2rem;
+      background: #ff5722;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: transform 0.3s;
+    }
+
+    .menu button:hover, .game-over button:hover {
+      transform: scale(1.1);
+    }
+
+    #timer, #score {
+      font-size: 1.2rem;
+      margin: 10px;
+      text-align: center;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .hole {
+      width: 100px;
+      height: 100px;
+      background: #6c5b7b;
+      border-radius: 10px;
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .mole {
+      width: 80px;
+      height: 80px;
+      background: url('/mole.png') center/cover no-repeat;
+      position: absolute;
+      bottom: -100%;
+      left: 10px;
+      transition: bottom 0.3s;
+    }
+
+    .hole.active .mole {
+      bottom: 10px;
+    }
+
+    .game-over {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="menu">
+    <h1>Whack-a-Mole</h1>
+    <p>Choose Difficulty:</p>
+    <select id="difficulty">
+      <option value="easy">Easy</option>
+      <option value="medium">Medium</option>
+      <option value="hard">Hard</option>
+    </select>
+    <button id="start-game">Start Game</button>
+    <p>High Score: <span id="high-score">0</span></p>
+  </div>
+
+  <div id="game-container">
+    <div id="timer">Time Left: <span id="time">30</span>s</div>
+    <div id="score">Score: <span id="points">0</span></div>
+    <button id="pause-game">Pause</button>
+    <div class="grid">
+      <div class="hole" data-id="0"><div class="mole"></div></div>
+      <div class="hole" data-id="1"><div class="mole"></div></div>
+      <div class="hole" data-id="2"><div class="mole"></div></div>
+      <div class="hole" data-id="3"><div class="mole"></div></div>
+      <div class="hole" data-id="4"><div class="mole"></div></div>
+      <div class="hole" data-id="5"><div class="mole"></div></div>
+    </div>
+  </div>
+
+  <div class="game-over">
+    <h2>Game Over</h2>
+    <p>Your Score: <span id="final-score"></span></p>
+    <p>High Score: <span id="final-high-score"></span></p>
+    <button id="restart-game">Restart</button>
+  </div>
+
+  <script>
+    const startBtn = document.getElementById('start-game');
+    const restartBtn = document.getElementById('restart-game');
+    const pauseBtn = document.getElementById('pause-game');
+    const gameContainer = document.getElementById('game-container');
+    const menu = document.querySelector('.menu');
+    const gameOverScreen = document.querySelector('.game-over');
+    const timerDisplay = document.getElementById('time');
+    const scoreDisplay = document.getElementById('points');
+    const finalScoreDisplay = document.getElementById('final-score');
+    const finalHighScoreDisplay = document.getElementById('final-high-score');
+    const highScoreDisplay = document.getElementById('high-score');
+    const holes = document.querySelectorAll('.hole');
+    const difficultySelect = document.getElementById('difficulty');
+    let score = 0;
+    let timeLeft = 40;
+    let gameInterval;
+    let moleTimeout;
+    let isPaused = false;
+    let highScore = localStorage.getItem('highScore') || 0;
+    highScoreDisplay.textContent = highScore;
+
+    function playSound(src) {
+      const audio = new Audio(src);
+      audio.play();
+    }
+
+    function startGame() {
+      score = 0;
+      timeLeft = 40;
+      isPaused = false;
+      scoreDisplay.textContent = score;
+      timerDisplay.textContent = timeLeft;
+      menu.style.display = 'none';
+      gameContainer.style.display = 'block';
+      gameOverScreen.style.display = 'none';
+      gameInterval = setInterval(updateTimer, 1000);
+      showMole();
+    }
+
+    function updateTimer() {
+      if (!isPaused) {
+        timeLeft--;
+        timerDisplay.textContent = timeLeft;
+        if (timeLeft <= 0) {
+          clearInterval(gameInterval);
+          endGame();
+        }
+      }
+    }
+
+    function showMole() {
+      const randomHole = holes[Math.floor(Math.random() * holes.length)];
+      randomHole.classList.add('active');
+      const difficulty = difficultySelect.value;
+      let moleSpeed = difficulty === 'easy' ? 800 : difficulty === 'medium' ? 500 : 300;
+      moleTimeout = setTimeout(() => {
+        randomHole.classList.remove('active');
+        if (timeLeft > 0 && !isPaused) showMole();
+      }, Math.max(moleSpeed - score * 20, 300));
+    }
+
+    function whack(event) {
+      if (!event.target.classList.contains('mole')) return;
+      const hole = event.target.parentElement;
+      if (!hole.classList.contains('active')) return;
+      playSound('/soundmock.mp3'); // Replace with your sound file URL
+      score++;
+      scoreDisplay.textContent = score;
+      hole.classList.remove('active');
+    }
+
+    function endGame() {
+      clearTimeout(moleTimeout);
+      gameContainer.style.display = 'none';
+      gameOverScreen.style.display = 'block';
+      finalScoreDisplay.textContent = score;
+      if (score > highScore) {
+        highScore = score;
+        localStorage.setItem('highScore', highScore);
+      }
+      finalHighScoreDisplay.textContent = highScore;
+    }
+
+    function togglePause() {
+      isPaused = !isPaused;
+      pauseBtn.textContent = isPaused ? 'Resume' : 'Pause';
+      if (!isPaused) showMole();
+    }
+
+    startBtn.addEventListener('click', startGame);
+    restartBtn.addEventListener('click', startGame);
+    pauseBtn.addEventListener('click', togglePause);
+    holes.forEach(hole => hole.addEventListener('click', whack));
+
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js').catch(err => {
+        console.error('Service Worker registration failed:', err);
+      });
+    }
+  </script>
+
+  <script id="service-worker">
+    const CACHE_NAME = 'whack-a-mole-cache';
+    const urlsToCache = ['./', './index.html'];
+
+    self.addEventListener('install', event => {
+      event.waitUntil(
+        caches.open(CACHE_NAME).then(cache => {
+          return cache.addAll(urlsToCache);
+        })
+      );
+    });
+
+    self.addEventListener('fetch', event => {
+      event.respondWith(
+        caches.match(event.request).then(response => {
+          return response || fetch(event.request);
+        })
+      );
+    });
+  </script>
+</body>
+</html>

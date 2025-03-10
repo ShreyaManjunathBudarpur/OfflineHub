@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Car Game</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        canvas {
+            display: block;
+            background: linear-gradient(#87ceeb, #444); /* Default climate view */
+        }
+        .info-panel {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            font-size: 18px;
+        }
+        .info-panel div {
+            margin-bottom: 10px;
+        }
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 40px;
+            text-align: center;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="info-panel">
+        <div class="score">Score: 0</div>
+        <div class="speedometer">Speed: 5</div>
+    </div>
+    <div class="game-over">
+        Game Over<br>
+        Press R to Restart
+    </div>
+    <canvas id="gameCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.querySelector('.score');
+        const speedometerElement = document.querySelector('.speedometer');
+        const gameOverElement = document.querySelector('.game-over');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let score = 0;
+        let speed = 5;
+        let gameRunning = true;
+        let gamePaused = false;
+
+        const car = {
+            x: canvas.width / 2 - 25,
+            y: canvas.height - 100,
+            width: 50,
+            height: 100,
+            speed: speed,
+        };
+
+        const obstacles = [];
+        const obstacleSpeed = speed;
+
+        const createObstacle = () => {
+            const width = Math.random() * 50 + 50;
+            const x = Math.random() * (canvas.width - width);
+            obstacles.push({
+                x,
+                y: -100,
+                width,
+                height: 20,
+            });
+        };
+
+        const moveCar = (e) => {
+            if (!gameRunning || gamePaused) return;
+            if (e.key === 'ArrowLeft' && car.x > 0) {
+                car.x -= car.speed;
+            } else if (e.key === 'ArrowRight' && car.x + car.width < canvas.width) {
+                car.x += car.speed;
+            }
+        };
+
+        const checkCollision = () => {
+            for (const obstacle of obstacles) {
+                if (
+                    car.x < obstacle.x + obstacle.width &&
+                    car.x + car.width > obstacle.x &&
+                    car.y < obstacle.y + obstacle.height &&
+                    car.y + car.height > obstacle.y
+                ) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        const updateGame = () => {
+            if (!gameRunning || gamePaused) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw the car
+            ctx.fillStyle = 'blue';
+            ctx.fillRect(car.x, car.y, car.width, car.height);
+
+            // Draw and update obstacles
+            ctx.fillStyle = 'red';
+            for (const obstacle of obstacles) {
+                obstacle.y += obstacleSpeed;
+                ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+            }
+
+            // Remove off-screen obstacles and increase score
+            obstacles.forEach((obstacle, index) => {
+                if (obstacle.y > canvas.height) {
+                    obstacles.splice(index, 1);
+                    score += 10;
+                    speed += 0.5; // Increase speed slightly
+                    car.speed = speed;
+                }
+            });
+
+            // Check for collisions
+            if (checkCollision()) {
+                gameRunning = false;
+                gameOverElement.style.display = 'block';
+            }
+
+            // Update UI
+            scoreElement.textContent = `Score: ${score}`;
+            speedometerElement.textContent = `Speed: ${speed.toFixed(1)}`;
+        };
+
+        const gameLoop = () => {
+            updateGame();
+            if (gameRunning) {
+                requestAnimationFrame(gameLoop);
+            }
+        };
+
+        const resetGame = () => {
+            score = 0;
+            speed = 5;
+            car.speed = speed;
+            car.x = canvas.width / 2 - 25;
+            obstacles.length = 0;
+            gameRunning = true;
+            gamePaused = false;
+            gameOverElement.style.display = 'none';
+            gameLoop();
+        };
+
+        const togglePause = () => {
+            if (!gameRunning) return;
+            gamePaused = !gamePaused;
+            if (!gamePaused) gameLoop();
+        };
+
+        // Spawn obstacles at intervals
+        setInterval(() => {
+            if (gameRunning && !gamePaused) createObstacle();
+        }, 1000);
+
+        document.addEventListener('keydown', moveCar);
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'r' || e.key === 'R') {
+                resetGame();
+            } else if (e.key === 'p' || e.key === 'P') {
+                togglePause();
+            }
+        });
+
+        // Start the game
+        gameLoop();
+    </script>
+</body>
+</html>
